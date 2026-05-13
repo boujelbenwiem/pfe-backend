@@ -1,0 +1,12 @@
+import duckdb
+con = duckdb.connect('../bv-auth-backend/bv_datawarehouse.duckdb', read_only=True)
+print("=== Tables with shop_id ===")
+rows = con.execute("SELECT table_name, column_name FROM information_schema.columns WHERE column_name = 'shop_id' ORDER BY table_name").fetchall()
+for r in rows: print(r)
+print("\n=== All tables ===")
+tables = con.execute("SELECT table_name FROM information_schema.tables WHERE table_type='BASE TABLE'").fetchall()
+for t in tables: print(t)
+print("\n=== All columns per table ===")
+cols = con.execute("SELECT table_name, column_name FROM information_schema.columns ORDER BY table_name, ordinal_position").fetchall()
+for c in cols: print(c)
+con.close()

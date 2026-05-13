@@ -1,0 +1,685 @@
+[
+  {
+    "type": "table_schema",
+    "table_name": "products",
+    "category": "identification",
+    "columns": [
+      {"name": "sku", "type": "INTEGER", "pk": true, "description": "Référence unique du produit"},
+      {"name": "product_id", "type": "INTEGER", "pk": false, "description": "Identifiant interne du produit"},
+      {"name": "product_name", "type": "VARCHAR(500)", "pk": false, "description": "Nom commercial du produit"},
+      {"name": "brand", "type": "VARCHAR(100)", "pk": false, "description": "Marque du produit"},
+      {"name": "barcode", "type": "BIGINT", "pk": false, "description": "Code-barres EAN-13"}
+    ],
+    "description": "Identifier un produit par son SKU, son nom, sa marque ou son code-barres.",
+    "relations": [
+      "products.sku → pricing_by_shop.sku",
+      "products.sku → product_category.product_sku",
+      "products.sku → product_attributes.product_sku",
+      "products.sku → product_associations.product_sku",
+      "products.sku → product_delivery_stock.sku",
+      "products.sku → product_variants.parent_product_sku",
+      "products.sku → promotions.product_sku"
+    ]
+  },
+  {
+    "type": "table_schema",
+    "table_name": "products",
+    "category": "metadata",
+    "columns": [
+      {"name": "sku", "type": "INTEGER", "pk": true, "description": "Référence unique du produit"},
+      {"name": "created_at", "type": "TIMESTAMP", "pk": false, "description": "Date de création du produit"},
+      {"name": "updated_at", "type": "TIMESTAMP", "pk": false, "description": "Date de dernière mise à jour"},
+      {"name": "status", "type": "VARCHAR(50)", "pk": false, "description": "Statut du produit (enabled/disabled)"}
+    ],
+    "description": "Suivre les dates de création et modification des produits.",
+    "relations": []
+  },
+  {
+    "type": "table_schema",
+    "table_name": "products",
+    "category": "classification",
+    "columns": [
+      {"name": "sku", "type": "INTEGER", "pk": true, "description": "Référence unique du produit"},
+      {"name": "tax_class_id", "type": "VARCHAR(100)", "pk": false, "description": "Classe fiscale du produit"},
+      {"name": "product_type", "type": "VARCHAR(50)", "pk": false, "description": "Type de produit"},
+      {"name": "product_typology", "type": "VARCHAR(100)", "pk": false, "description": "Typologie du produit"},
+      {"name": "product_condition", "type": "VARCHAR(50)", "pk": false, "description": "État du produit (neuf, reconditionné, etc.)"}
+    ],
+    "description": "Classer les produits par type, typologie et condition.",
+    "relations": []
+  },
+  {
+    "type": "table_schema",
+    "table_name": "products",
+    "category": "vente",
+    "columns": [
+      {"name": "sku", "type": "INTEGER", "pk": true, "description": "Référence unique du produit"},
+      {"name": "authorized_shop_sale", "type": "BOOLEAN", "pk": false, "description": "Produit autorisé à la vente en magasin"},
+      {"name": "product_sales", "type": "INTEGER", "pk": false, "description": "Nombre de ventes du produit"}
+    ],
+    "description": "Gérer les autorisations et statistiques de vente des produits.",
+    "relations": []
+  },
+  {
+    "type": "table_schema",
+    "table_name": "products",
+    "category": "avis",
+    "columns": [
+      {"name": "sku", "type": "INTEGER", "pk": true, "description": "Référence unique du produit"},
+      {"name": "rating_summary", "type": "VARCHAR(50)", "pk": false, "description": "Résumé de la note moyenne"},
+      {"name": "total_reviews", "type": "DECIMAL(5,2)", "pk": false, "description": "Nombre total d'avis"}
+    ],
+    "description": "Consulter les notes et avis clients des produits.",
+    "relations": []
+  },
+  {
+    "type": "table_schema",
+    "table_name": "categories",
+    "category": "identification",
+    "columns": [
+      {"name": "category_id", "type": "INTEGER", "pk": true, "description": "Identifiant unique de la catégorie"},
+      {"name": "category_name", "type": "VARCHAR(500)", "pk": false, "description": "Nom de la catégorie"},
+      {"name": "breadcrumb_path", "type": "VARCHAR(1000)", "pk": false, "description": "Chemin de navigation (fil d'Ariane)"}
+    ],
+    "description": "Identifier une catégorie par son ID, nom ou chemin de navigation.",
+    "relations": [
+      "categories.category_id → product_category.category_id"
+    ]
+  },
+  {
+    "type": "table_schema",
+    "table_name": "categories",
+    "category": "hierarchie",
+    "columns": [
+      {"name": "category_id", "type": "INTEGER", "pk": true, "description": "Identifiant unique de la catégorie"},
+      {"name": "category_level", "type": "INTEGER", "pk": false, "description": "Niveau de profondeur dans la hiérarchie"},
+      {"name": "parent_id", "type": "INTEGER", "pk": false, "description": "ID de la catégorie parente"}
+    ],
+    "description": "Naviguer dans la hiérarchie des catégories (parent-enfant).",
+    "relations": [
+      "categories.parent_id → categories.category_id"
+    ]
+  },
+  {
+    "type": "table_schema",
+    "table_name": "shops",
+    "category": "identification",
+    "columns": [
+      {"name": "shop_id", "type": "VARCHAR(50)", "pk": true, "description": "Identifiant unique du magasin"},
+      {"name": "shop_name", "type": "VARCHAR(200)", "pk": false, "description": "Nom du magasin"},
+      {"name": "territory_id", "type": "VARCHAR(10)", "pk": false, "description": "Identifiant du territoire"}
+    ],
+    "description": "Identifier un magasin par son ID, nom ou territoire.",
+    "relations": [
+      "shops.shop_id → pricing_by_shop.shop_id",
+      "shops.shop_id → shop_opening_hours.shop_id",
+      "shops.shop_id → shop_services.shop_id",
+      "shops.shop_id → shop_printing_services.shop_id",
+      "shops.shop_id → product_delivery_stock.shop_id",
+      "shops.shop_id → shop_delivery_modes.shop_id"
+    ]
+  },
+  {
+    "type": "table_schema",
+    "table_name": "shops",
+    "category": "localisation",
+    "columns": [
+      {"name": "shop_id", "type": "VARCHAR(50)", "pk": true, "description": "Identifiant unique du magasin"},
+      {"name": "city", "type": "VARCHAR(100)", "pk": false, "description": "Ville du magasin"},
+      {"name": "postal_code", "type": "VARCHAR(10)", "pk": false, "description": "Code postal"},
+      {"name": "street", "type": "VARCHAR(200)", "pk": false, "description": "Adresse rue"},
+      {"name": "longitude", "type": "DECIMAL(10,6)", "pk": false, "description": "Longitude GPS"},
+      {"name": "latitude", "type": "DECIMAL(10,6)", "pk": false, "description": "Latitude GPS"},
+      {"name": "region", "type": "VARCHAR(10)", "pk": false, "description": "Région"}
+    ],
+    "description": "Localiser un magasin par adresse ou coordonnées GPS.",
+    "relations": []
+  },
+  {
+    "type": "table_schema",
+    "table_name": "shops",
+    "category": "contact",
+    "columns": [
+      {"name": "shop_id", "type": "VARCHAR(50)", "pk": true, "description": "Identifiant unique du magasin"},
+      {"name": "phone", "type": "VARCHAR(30)", "pk": false, "description": "Numéro de téléphone"},
+      {"name": "email", "type": "VARCHAR(100)", "pk": false, "description": "Adresse email"}
+    ],
+    "description": "Contacter un magasin par téléphone ou email.",
+    "relations": []
+  },
+  {
+    "type": "table_schema",
+    "table_name": "shops",
+    "category": "caracteristiques",
+    "columns": [
+      {"name": "shop_id", "type": "VARCHAR(50)", "pk": true, "description": "Identifiant unique du magasin"},
+      {"name": "store_type", "type": "VARCHAR(50)", "pk": false, "description": "Type de magasin"},
+      {"name": "opening_date", "type": "DATE", "pk": false, "description": "Date d'ouverture"},
+      {"name": "surface_area_m2", "type": "INTEGER", "pk": false, "description": "Surface en m²"},
+      {"name": "manager_name", "type": "VARCHAR(100)", "pk": false, "description": "Nom du responsable"}
+    ],
+    "description": "Connaître les caractéristiques physiques et organisationnelles d'un magasin.",
+    "relations": []
+  },
+  {
+    "type": "table_schema",
+    "table_name": "shops",
+    "category": "juridique",
+    "columns": [
+      {"name": "shop_id", "type": "VARCHAR(50)", "pk": true, "description": "Identifiant unique du magasin"},
+      {"name": "franchise_name", "type": "VARCHAR(100)", "pk": false, "description": "Nom de la franchise"},
+      {"name": "raison_sociale", "type": "VARCHAR(200)", "pk": false, "description": "Raison sociale"},
+      {"name": "legal_status", "type": "VARCHAR(50)", "pk": false, "description": "Statut juridique"}
+    ],
+    "description": "Gérer les informations juridiques et de franchise.",
+    "relations": []
+  },
+  {
+    "type": "table_schema",
+    "table_name": "shops",
+    "category": "configuration_prix",
+    "columns": [
+      {"name": "shop_id", "type": "VARCHAR(50)", "pk": true, "description": "Identifiant unique du magasin"},
+      {"name": "has_personal_price", "type": "BOOLEAN", "pk": false, "description": "Prix personnalisés activés"},
+      {"name": "aligned_territory_price", "type": "BOOLEAN", "pk": false, "description": "Prix alignés sur le territoire"},
+      {"name": "aligned_territory_service_price", "type": "BOOLEAN", "pk": false, "description": "Prix services alignés sur le territoire"}
+    ],
+    "description": "Gérer la politique tarifaire du magasin.",
+    "relations": []
+  },
+  {
+    "type": "table_schema",
+    "table_name": "shops",
+    "category": "configuration_stock",
+    "columns": [
+      {"name": "shop_id", "type": "VARCHAR(50)", "pk": true, "description": "Identifiant unique du magasin"},
+      {"name": "has_unified_stock", "type": "BOOLEAN", "pk": false, "description": "Stock unifié activé"},
+      {"name": "zipcode_malus", "type": "BOOLEAN", "pk": false, "description": "Malus code postal activé"},
+      {"name": "bonus_malus", "type": "BOOLEAN", "pk": false, "description": "Système bonus/malus activé"}
+    ],
+    "description": "Gérer la configuration du stock et malus.",
+    "relations": []
+  },
+  {
+    "type": "table_schema",
+    "table_name": "shops",
+    "category": "livraison",
+    "columns": [
+      {"name": "shop_id", "type": "VARCHAR(50)", "pk": true, "description": "Identifiant unique du magasin"},
+      {"name": "allow_pickup", "type": "BOOLEAN", "pk": false, "description": "Retrait en magasin autorisé"},
+      {"name": "allow_relay", "type": "BOOLEAN", "pk": false, "description": "Livraison en point relais autorisée"},
+      {"name": "allow_custom_relay", "type": "BOOLEAN", "pk": false, "description": "Point relais personnalisé autorisé"},
+      {"name": "allow_express", "type": "BOOLEAN", "pk": false, "description": "Livraison express autorisée"},
+      {"name": "pickup_zone", "type": "VARCHAR(50)", "pk": false, "description": "Zone de retrait"}
+    ],
+    "description": "Gérer les modes de livraison disponibles.",
+    "relations": []
+  },
+  {
+    "type": "table_schema",
+    "table_name": "shops",
+    "category": "paiement_et_commande",
+    "columns": [
+      {"name": "shop_id", "type": "VARCHAR(50)", "pk": true, "description": "Identifiant unique du magasin"},
+      {"name": "payment_methods", "type": "VARCHAR(500)", "pk": false, "description": "Méthodes de paiement acceptées"},
+      {"name": "preparation_time_hours", "type": "INTEGER", "pk": false, "description": "Temps de préparation en heures"},
+      {"name": "delivery_time", "type": "INTEGER", "pk": false, "description": "Délai de livraison"},
+      {"name": "threshold_online_payment_currency", "type": "VARCHAR(3)", "pk": false, "description": "Devise pour seuil paiement en ligne"},
+      {"name": "order_type", "type": "VARCHAR(20)", "pk": false, "description": "Type de commande"}
+    ],
+    "description": "Gérer les paiements et paramètres de commande.",
+    "relations": []
+  },
+  {
+    "type": "table_schema",
+    "table_name": "shops",
+    "category": "service_client",
+    "columns": [
+      {"name": "shop_id", "type": "VARCHAR(50)", "pk": true, "description": "Identifiant unique du magasin"},
+      {"name": "service_radius_km", "type": "INTEGER", "pk": false, "description": "Rayon de service en km"},
+      {"name": "quote_validity_days", "type": "INTEGER", "pk": false, "description": "Validité des devis en jours"}
+    ],
+    "description": "Gérer les paramètres de service client.",
+    "relations": []
+  },
+  {
+    "type": "table_schema",
+    "table_name": "shops",
+    "category": "visibilite",
+    "columns": [
+      {"name": "shop_id", "type": "VARCHAR(50)", "pk": true, "description": "Identifiant unique du magasin"},
+      {"name": "has_exceptional_hours", "type": "BOOLEAN", "pk": false, "description": "Horaires exceptionnels activés"},
+      {"name": "is_visible_web", "type": "BOOLEAN", "pk": false, "description": "Visible sur le web"},
+      {"name": "is_territory_shop", "type": "BOOLEAN", "pk": false, "description": "Magasin de territoire"}
+    ],
+    "description": "Gérer la visibilité du magasin.",
+    "relations": []
+  },
+  {
+    "type": "table_schema",
+    "table_name": "product_category",
+    "category": "association",
+    "columns": [
+      {"name": "product_sku", "type": "INTEGER", "pk": true, "description": "Référence du produit"},
+      {"name": "category_id", "type": "INTEGER", "pk": true, "description": "ID de la catégorie"}
+    ],
+    "description": "Associer des produits à leurs catégories.",
+    "relations": [
+      "product_category.product_sku → products.sku",
+      "product_category.category_id → categories.category_id"
+    ]
+  },
+  {
+    "type": "table_schema",
+    "table_name": "pricing_by_shop",
+    "category": "identification",
+    "columns": [
+      {"name": "shop_id", "type": "VARCHAR(50)", "pk": true, "description": "Identifiant du magasin"},
+      {"name": "sku", "type": "INTEGER", "pk": true, "description": "Référence du produit"},
+      {"name": "territory_id", "type": "VARCHAR(10)", "pk": false, "description": "Identifiant du territoire"}
+    ],
+    "description": "Identifier un tarif par magasin et produit.",
+    "relations": [
+      "pricing_by_shop.shop_id → shops.shop_id",
+      "pricing_by_shop.sku → products.sku"
+    ]
+  },
+  {
+    "type": "table_schema",
+    "table_name": "pricing_by_shop",
+    "category": "prix",
+    "columns": [
+      {"name": "shop_id", "type": "VARCHAR(50)", "pk": true, "description": "Identifiant du magasin"},
+      {"name": "sku", "type": "INTEGER", "pk": true, "description": "Référence du produit"},
+      {"name": "base_price_ttc", "type": "DECIMAL(10,2)", "pk": false, "description": "Prix de base TTC"},
+      {"name": "base_price_ht", "type": "DECIMAL(10,2)", "pk": false, "description": "Prix de base HT"},
+      {"name": "selling_price_ttc", "type": "DECIMAL(10,2)", "pk": false, "description": "Prix de vente TTC"},
+      {"name": "selling_price_ht", "type": "DECIMAL(10,2)", "pk": false, "description": "Prix de vente HT"},
+      {"name": "tax_rate", "type": "DECIMAL(5,2)", "pk": false, "description": "Taux de TVA"}
+    ],
+    "description": "Consulter les prix HT et TTC par magasin.",
+    "relations": []
+  },
+  {
+    "type": "table_schema",
+    "table_name": "pricing_by_shop",
+    "category": "disponibilite",
+    "columns": [
+      {"name": "shop_id", "type": "VARCHAR(50)", "pk": true, "description": "Identifiant du magasin"},
+      {"name": "sku", "type": "INTEGER", "pk": true, "description": "Référence du produit"},
+      {"name": "authorized_shop_sale", "type": "BOOLEAN", "pk": false, "description": "Vente autorisée dans ce magasin"},
+      {"name": "is_virtual_product", "type": "BOOLEAN", "pk": false, "description": "Produit virtuel"}
+    ],
+    "description": "Vérifier la disponibilité de vente d'un produit par magasin.",
+    "relations": []
+  },
+  {
+    "type": "table_schema",
+    "table_name": "shop_opening_hours",
+    "category": "horaires",
+    "columns": [
+      {"name": "shop_id", "type": "VARCHAR(50)", "pk": true, "description": "Identifiant du magasin"},
+      {"name": "day", "type": "VARCHAR(20)", "pk": true, "description": "Jour de la semaine (Monday to Sunday)"},
+      {"name": "am_open", "type": "VARCHAR(10)", "pk": false, "description": "Ouverture matin"},
+      {"name": "am_close", "type": "VARCHAR(10)", "pk": false, "description": "Fermeture matin"},
+      {"name": "pm_open", "type": "VARCHAR(10)", "pk": false, "description": "Ouverture après-midi"},
+      {"name": "pm_close", "type": "VARCHAR(10)", "pk": false, "description": "Fermeture après-midi"}
+    ],
+    "description": "Consulter les horaires d'ouverture par jour.",
+    "relations": [
+      "shop_opening_hours.shop_id → shops.shop_id"
+    ]
+  },
+  {
+    "type": "table_schema",
+    "table_name": "shop_services",
+    "category": "services_generaux",
+    "columns": [
+      {"name": "shop_id", "type": "VARCHAR(50)", "pk": true, "description": "Identifiant du magasin"},
+      {"name": "has_repurchase_calculator", "type": "BOOLEAN", "pk": false, "description": "Calculateur de rachat disponible"},
+      {"name": "key_copy", "type": "BOOLEAN", "pk": false, "description": "Reproduction de clés"},
+      {"name": "it_support", "type": "BOOLEAN", "pk": false, "description": "Support informatique"},
+      {"name": "pos_display_support", "type": "BOOLEAN", "pk": false, "description": "Support PLV"},
+      {"name": "equipment_rental", "type": "BOOLEAN", "pk": false, "description": "Location de matériel"},
+      {"name": "furniture_assembly", "type": "BOOLEAN", "pk": false, "description": "Montage de meubles"}
+    ],
+    "description": "Services généraux proposés par le magasin.",
+    "relations": [
+      "shop_services.shop_id → shops.shop_id"
+    ]
+  },
+  {
+    "type": "table_schema",
+    "table_name": "shop_services",
+    "category": "services_papeterie",
+    "columns": [
+      {"name": "shop_id", "type": "VARCHAR(50)", "pk": true, "description": "Identifiant du magasin"},
+      {"name": "book_covering", "type": "BOOLEAN", "pk": false, "description": "Couverture de livres"},
+      {"name": "flyers_and_brochures", "type": "BOOLEAN", "pk": false, "description": "Flyers et brochures"},
+      {"name": "customized_products", "type": "BOOLEAN", "pk": false, "description": "Produits personnalisés"},
+      {"name": "cards_making", "type": "BOOLEAN", "pk": false, "description": "Fabrication de cartes"},
+      {"name": "wish_cards", "type": "BOOLEAN", "pk": false, "description": "Cartes de vœux"},
+      {"name": "business_cards", "type": "BOOLEAN", "pk": false, "description": "Cartes de visite"},
+      {"name": "invitations", "type": "BOOLEAN", "pk": false, "description": "Invitations"}
+    ],
+    "description": "Services de papeterie et personnalisation.",
+    "relations": []
+  },
+  {
+    "type": "table_schema",
+    "table_name": "shop_services",
+    "category": "services_impression",
+    "columns": [
+      {"name": "shop_id", "type": "VARCHAR(50)", "pk": true, "description": "Identifiant du magasin"},
+      {"name": "photo_copying_black_white", "type": "BOOLEAN", "pk": false, "description": "Photocopie noir et blanc"},
+      {"name": "large_format_printing", "type": "BOOLEAN", "pk": false, "description": "Impression grand format"},
+      {"name": "binding_laminating", "type": "BOOLEAN", "pk": false, "description": "Reliure et plastification"},
+      {"name": "buffer_machine", "type": "BOOLEAN", "pk": false, "description": "Machine tampon"}
+    ],
+    "description": "Services d'impression et reprographie.",
+    "relations": []
+  },
+  {
+    "type": "table_schema",
+    "table_name": "shop_services",
+    "category": "services_recyclage",
+    "columns": [
+      {"name": "shop_id", "type": "VARCHAR(50)", "pk": true, "description": "Identifiant du magasin"},
+      {"name": "ink_cartridge_repurchase", "type": "BOOLEAN", "pk": false, "description": "Rachat de cartouches d'encre"}
+    ],
+    "description": "Services de recyclage et rachat.",
+    "relations": []
+  },
+  {
+    "type": "table_schema",
+    "table_name": "shop_services",
+    "category": "autres_services",
+    "columns": [
+      {"name": "shop_id", "type": "VARCHAR(50)", "pk": true, "description": "Identifiant du magasin"},
+      {"name": "other_service", "type": "VARCHAR(500)", "pk": false, "description": "Autres services divers"}
+    ],
+    "description": "Services non catégorisés.",
+    "relations": []
+  },
+  {
+    "type": "table_schema",
+    "table_name": "shop_printing_services",
+    "category": "configuration_impression",
+    "columns": [
+      {"name": "shop_id", "type": "VARCHAR(50)", "pk": true, "description": "Identifiant du magasin"},
+      {"name": "status", "type": "BOOLEAN", "pk": false, "description": "Service d'impression actif"},
+      {"name": "active_types", "type": "VARCHAR(500)", "pk": false, "description": "Types d'impression actifs"}
+    ],
+    "description": "Configuration des services d'impression.",
+    "relations": [
+      "shop_printing_services.shop_id → shops.shop_id"
+    ]
+  },
+  {
+    "type": "table_schema",
+    "table_name": "shop_printing_services",
+    "category": "liste_scolaire",
+    "columns": [
+      {"name": "shop_id", "type": "VARCHAR(50)", "pk": true, "description": "Identifiant du magasin"},
+      {"name": "school_list_status", "type": "BOOLEAN", "pk": false, "description": "Service liste scolaire actif"},
+      {"name": "school_service_type", "type": "VARCHAR(50)", "pk": false, "description": "Type de service scolaire"},
+      {"name": "school_service_value", "type": "VARCHAR(50)", "pk": false, "description": "Valeur du service scolaire"},
+      {"name": "school_withdrawal_period", "type": "VARCHAR(10)", "pk": false, "description": "Période de retrait scolaire"}
+    ],
+    "description": "Gestion des listes scolaires.",
+    "relations": []
+  },
+  {
+    "type": "table_schema",
+    "table_name": "shop_printing_services",
+    "category": "trodat",
+    "columns": [
+      {"name": "shop_id", "type": "VARCHAR(50)", "pk": true, "description": "Identifiant du magasin"},
+      {"name": "trodat_shop_type", "type": "VARCHAR(50)", "pk": false, "description": "Type de magasin Trodat"},
+      {"name": "trodat_affiliated_shop", "type": "VARCHAR(50)", "pk": false, "description": "Magasin affilié Trodat"},
+      {"name": "trodat_email", "type": "VARCHAR(100)", "pk": false, "description": "Email Trodat"}
+    ],
+    "description": "Affiliation et services Trodat.",
+    "relations": []
+  },
+  {
+    "type": "table_schema",
+    "table_name": "product_attributes",
+    "category": "attributs",
+    "columns": [
+      {"name": "product_sku", "type": "INTEGER", "pk": true, "description": "Référence du produit"},
+      {"name": "attribute_name", "type": "VARCHAR(100)", "pk": true, "description": "Nom de l'attribut"},
+      {"name": "attribute_value", "type": "VARCHAR(500)", "pk": true, "description": "Valeur de l'attribut"}
+    ],
+    "description": "Gérer les attributs techniques des produits (largeur, hauteur, profondeur, poids, etc.).",
+    "relations": [
+      "product_attributes.product_sku → products.sku"
+    ]
+  },
+  {
+    "type": "table_schema",
+    "table_name": "product_associations",
+    "category": "associations",
+    "columns": [
+      {"name": "product_sku", "type": "INTEGER", "pk": true, "description": "Référence du produit principal"},
+      {"name": "associated_product_sku", "type": "INTEGER", "pk": true, "description": "Référence du produit associé"},
+      {"name": "association_type", "type": "VARCHAR(100)", "pk": true, "description": "Type d'association (cross-sell, up-sell, accessoire, etc.)"}
+    ],
+    "description": "Gérer les produits associés et recommandations.",
+    "relations": [
+      "product_associations.product_sku → products.sku"
+    ]
+  },
+  {
+    "type": "table_schema",
+    "table_name": "product_delivery_stock",
+    "category": "identification",
+    "columns": [
+      {"name": "shop_id", "type": "VARCHAR(50)", "pk": true, "description": "Identifiant du magasin"},
+      {"name": "sku", "type": "INTEGER", "pk": true, "description": "Référence du produit"},
+      {"name": "delivery_mode", "type": "VARCHAR(50)", "pk": true, "description": "Mode de livraison(PICK_UP, SHIPPING, RELAY, EXPRESS)"}
+    ],
+    "description": "Identifier un stock par magasin, produit et mode de livraison.",
+    "relations": [
+      "product_delivery_stock.shop_id → shops.shop_id",
+      "product_delivery_stock.sku → products.sku"
+    ]
+  },
+  {
+    "type": "table_schema",
+    "table_name": "product_delivery_stock",
+    "category": "stock_disponibilite",
+    "columns": [
+      {"name": "shop_id", "type": "VARCHAR(50)", "pk": true, "description": "Identifiant du magasin"},
+      {"name": "sku", "type": "INTEGER", "pk": true, "description": "Référence du produit"},
+      {"name": "delivery_mode", "type": "VARCHAR(50)", "pk": true, "description": "Mode de livraison(PICK_UP, SHIPPING, RELAY, EXPRESS)"},
+      {"name": "is_available", "type": "BOOLEAN", "pk": false, "description": "Produit disponible"},
+      {"name": "available_quantity", "type": "INTEGER", "pk": false, "description": "Quantité disponible"},
+      {"name": "origin_quantity", "type": "INTEGER", "pk": false, "description": "Quantité d'origine"},
+      {"name": "is_resuppliable", "type": "BOOLEAN", "pk": false, "description": "Produit réapprovisionnable"}
+    ],
+    "description": "Consulter les stocks disponibles par mode de livraison.",
+    "relations": []
+  },
+  {
+    "type": "table_schema",
+    "table_name": "product_delivery_stock",
+    "category": "localisation_stock",
+    "columns": [
+      {"name": "shop_id", "type": "VARCHAR(50)", "pk": true, "description": "Identifiant du magasin"},
+      {"name": "sku", "type": "INTEGER", "pk": true, "description": "Référence du produit"},
+      {"name": "delivery_mode", "type": "VARCHAR(50)", "pk": true, "description": "Mode de livraison(PICK_UP, SHIPPING, RELAY, EXPRESS)"},
+      {"name": "location_id", "type": "VARCHAR(50)", "pk": false, "description": "ID de localisation"},
+      {"name": "stock_type", "type": "VARCHAR(50)", "pk": false, "description": "Type de stock"},
+      {"name": "stock_name", "type": "VARCHAR(100)", "pk": false, "description": "Nom du stock"},
+      {"name": "stock_location_id", "type": "VARCHAR(50)", "pk": false, "description": "ID de localisation du stock"}
+    ],
+    "description": "Localiser physiquement un stock.",
+    "relations": []
+  },
+  {
+    "type": "table_schema",
+    "table_name": "product_delivery_stock",
+    "category": "delais",
+    "columns": [
+      {"name": "shop_id", "type": "VARCHAR(50)", "pk": true, "description": "Identifiant du magasin"},
+      {"name": "sku", "type": "INTEGER", "pk": true, "description": "Référence du produit"},
+      {"name": "delivery_mode", "type": "VARCHAR(50)", "pk": true, "description": "Mode de livraison(PICK_UP, SHIPPING, RELAY, EXPRESS)"},
+      {"name": "delay_hours", "type": "INTEGER", "pk": false, "description": "Délai en heures"},
+      {"name": "date_from", "type": "TIMESTAMP", "pk": false, "description": "Date de début de disponibilité"},
+      {"name": "has_malus", "type": "BOOLEAN", "pk": false, "description": "Malus appliqué"}
+    ],
+    "description": "Gérer les délais de livraison et pénalités.",
+    "relations": []
+  },
+  {
+    "type": "table_schema",
+    "table_name": "product_variants",
+    "category": "variantes",
+    "columns": [
+      {"name": "parent_product_sku", "type": "INTEGER", "pk": true, "description": "SKU du produit parent"},
+      {"name": "variant_sku", "type": "INTEGER", "pk": true, "description": "SKU de la variante"},
+      {"name": "variant_attribute", "type": "VARCHAR(100)", "pk": true, "description": "Attribut de variation (couleur, taille, etc.)"},
+      {"name": "variant_value", "type": "VARCHAR(200)", "pk": false, "description": "Valeur de l'attribut"}
+    ],
+    "description": "Gérer les variantes de produits (déclinaisons).",
+    "relations": [
+      "product_variants.parent_product_sku → products.sku"
+    ]
+  },
+  {
+    "type": "table_schema",
+    "table_name": "shop_delivery_modes",
+    "category": "identification",
+    "columns": [
+      {"name": "shop_id", "type": "VARCHAR(50)", "pk": true, "description": "Identifiant du magasin"},
+      {"name": "delivery_mode", "type": "VARCHAR(50)", "pk": true, "description": "Mode de livraison(PICK_UP, SHIPPING, RELAY, EXPRESS)"}
+    ],
+    "description": "Identifier un mode de livraison par magasin.",
+    "relations": [
+      "shop_delivery_modes.shop_id → shops.shop_id"
+    ]
+  },
+  {
+    "type": "table_schema",
+    "table_name": "shop_delivery_modes",
+    "category": "activation",
+    "columns": [
+      {"name": "shop_id", "type": "VARCHAR(50)", "pk": true, "description": "Identifiant du magasin"},
+      {"name": "delivery_mode", "type": "VARCHAR(50)", "pk": true, "description": "Mode de livraison(PICK_UP, SHIPPING, RELAY, EXPRESS)"},
+      {"name": "is_actif", "type": "BOOLEAN", "pk": false, "description": "Mode de livraison actif"},
+      {"name": "is_service_actif", "type": "BOOLEAN", "pk": false, "description": "Service de livraison actif"}
+    ],
+    "description": "Activer ou désactiver les modes de livraison.",
+    "relations": []
+  },
+  {
+    "type": "table_schema",
+    "table_name": "shop_delivery_modes",
+    "category": "delais",
+    "columns": [
+      {"name": "shop_id", "type": "VARCHAR(50)", "pk": true, "description": "Identifiant du magasin"},
+      {"name": "delivery_mode", "type": "VARCHAR(50)", "pk": true, "description": "Mode de livraison(PICK_UP, SHIPPING, RELAY, EXPRESS)"},
+      {"name": "delay_value", "type": "INTEGER", "pk": false, "description": "Valeur du délai"},
+      {"name": "delay_unit", "type": "VARCHAR(10)", "pk": false, "description": "Unité du délai (heures, jours)"},
+      {"name": "service_delay_value", "type": "INTEGER", "pk": false, "description": "Valeur du délai service"},
+      {"name": "service_delay_unit", "type": "VARCHAR(10)", "pk": false, "description": "Unité du délai service"},
+      {"name": "latest_order_same_day", "type": "VARCHAR(10)", "pk": false, "description": "Heure limite commande jour même"}
+    ],
+    "description": "Gérer les délais de livraison.",
+    "relations": []
+  },
+  {
+    "type": "table_schema",
+    "table_name": "shop_delivery_modes",
+    "category": "couts",
+    "columns": [
+      {"name": "shop_id", "type": "VARCHAR(50)", "pk": true, "description": "Identifiant du magasin"},
+      {"name": "delivery_mode", "type": "VARCHAR(50)", "pk": true, "description": "Mode de livraison(PICK_UP, SHIPPING, RELAY, EXPRESS)"},
+      {"name": "calculation_strategy", "type": "VARCHAR(50)", "pk": false, "description": "Stratégie de calcul des coûts"},
+      {"name": "fixed_cost", "type": "DECIMAL(10,2)", "pk": false, "description": "Coût fixe"},
+      {"name": "fixed_cost_currency", "type": "VARCHAR(3)", "pk": false, "description": "Devise du coût fixe"},
+      {"name": "is_free_delivery_enabled", "type": "BOOLEAN", "pk": false, "description": "Livraison gratuite activée"},
+      {"name": "free_delivery_min_amount", "type": "DECIMAL(10,2)", "pk": false, "description": "Montant minimum livraison gratuite"},
+      {"name": "radius_costs", "type": "VARCHAR(1000)", "pk": false, "description": "Coûts par rayon (JSON/CSV)"}
+    ],
+    "description": "Calculer les coûts de livraison.",
+    "relations": []
+  },
+  {
+    "type": "table_schema",
+    "table_name": "shop_delivery_modes",
+    "category": "eligibilite",
+    "columns": [
+      {"name": "shop_id", "type": "VARCHAR(50)", "pk": true, "description": "Identifiant du magasin"},
+      {"name": "delivery_mode", "type": "VARCHAR(50)", "pk": true, "description": "Mode de livraison(PICK_UP, SHIPPING, RELAY, EXPRESS)"},
+      {"name": "radius_threshold", "type": "INTEGER", "pk": false, "description": "Seuil de rayon"},
+      {"name": "eligibility_type", "type": "VARCHAR(50)", "pk": false, "description": "Type d'éligibilité"},
+      {"name": "eligibility_value", "type": "DECIMAL(10,2)", "pk": false, "description": "Valeur d'éligibilité"},
+      {"name": "eligibility_comparator", "type": "VARCHAR(10)", "pk": false, "description": "Comparateur d'éligibilité"},
+      {"name": "eligibility_unit", "type": "VARCHAR(10)", "pk": false, "description": "Unité d'éligibilité"}
+    ],
+    "description": "Définir les critères d'éligibilité à un mode de livraison.",
+    "relations": []
+  },
+  {
+    "type": "table_schema",
+    "table_name": "shop_delivery_modes",
+    "category": "penalites",
+    "columns": [
+      {"name": "shop_id", "type": "VARCHAR(50)", "pk": true, "description": "Identifiant du magasin"},
+      {"name": "delivery_mode", "type": "VARCHAR(50)", "pk": true, "description": "Mode de livraison(PICK_UP, SHIPPING, RELAY, EXPRESS)"},
+      {"name": "max_malus_penalty", "type": "DECIMAL(10,2)", "pk": false, "description": "Pénalité malus maximale"}
+    ],
+    "description": "Gérer les pénalités de livraison.",
+    "relations": []
+  },
+  {
+    "type": "table_schema",
+    "table_name": "promotions",
+    "category": "identification",
+    "columns": [
+      {"name": "promo_id", "type": "VARCHAR(100)", "pk": false, "description": "Identifiant de la promotion"},
+      {"name": "promo_label", "type": "VARCHAR(200)", "pk": false, "description": "Libellé de la promotion"},
+      {"name": "promo_name", "type": "VARCHAR(200)", "pk": false, "description": "Nom de la promotion"}
+    ],
+    "description": "Identifier une promotion par son ID, libellé ou nom.",
+    "relations": []
+  },
+  {
+    "type": "table_schema",
+    "table_name": "promotions",
+    "category": "details_promotion",
+    "columns": [
+      {"name": "promo_id", "type": "VARCHAR(100)", "pk": false, "description": "Identifiant de la promotion"},
+      {"name": "product_sku", "type": "INTEGER", "pk": false, "description": "Référence du produit concerné"},
+      {"name": "benefit_rule", "type": "VARCHAR(100)", "pk": false, "description": "Règle de bénéfice"},
+      {"name": "reference_price", "type": "DECIMAL(10,2)", "pk": false, "description": "Prix de référence"},
+      {"name": "discount_value", "type": "DECIMAL(10,2)", "pk": false, "description": "Valeur de la réduction"},
+      {"name": "promotion_role", "type": "VARCHAR(50)", "pk": false, "description": "Rôle de la promotion"}
+    ],
+    "description": "Consulter les détails et règles des promotions.",
+    "relations": [
+      "promotions.product_sku → products.sku"
+    ]
+  },
+  {
+  "type": "table_schema",
+  "table_name": "orders_items",
+  "category": "commandes",
+  "columns": [
+    {"name": "order_id", "type": "INTEGER", "pk": false, "description": "Identifiant interne de la commande"},
+    {"name": "order_number", "type": "VARCHAR(50)", "pk": false, "description": "Numéro de commande public (affiché au client)"},
+    {"name": "created_at", "type": "TIMESTAMP", "pk": false, "description": "Date et heure de création de la commande"},
+    {"name": "customer_id", "type": "INTEGER", "pk": false, "description": "Identifiant unique du client"},
+    {"name": "item_id", "type": "INTEGER", "pk": false, "description": "Identifiant unique de la ligne de commande"},
+    {"name": "sku", "type": "INTEGER", "pk": false, "description": "Référence unique du produit commandé (clé étrangère vers products.sku)"},
+    {"name": "product_name", "type": "VARCHAR(500)", "pk": false, "description": "Nom du produit au moment de la commande"},
+    {"name": "qty_ordered", "type": "INTEGER", "pk": false, "description": "Quantité commandée"}
+  ],
+  "description": "Consulter l'historique des commandes clients, les produits commandés, les quantités, et les dates de commande.",
+  "relations": [
+    "orders_items.sku → products.sku"
+  ]
+}
+]

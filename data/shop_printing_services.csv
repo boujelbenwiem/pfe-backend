@@ -1,0 +1,57 @@
+﻿ï»¿shop_id;status;active_types;school_list_status;school_service_type;school_service_value;school_withdrawal_period;trodat_shop_type;trodat_affiliated_shop;trodat_email
+BV551;true;A4, plans, posters, photos, tarps, expeditionLabels, booklets;true;FREE;0.0;1.0;Trodesign;;xxx@trodesign.fr
+BV512;true;A4, plans, posters, fluorescentPosters, photos, tarps, expeditionLabels, flyers, businessCard, booklets;true;FREE;6.99;2.0;ED;BV392;
+BV006;true;A4, plans, posters, fluorescentPosters, photos, expeditionLabels, booklets;true;SERVICE_CHARGE;6.99;6.0;Trodesign;;bvmondeville@trodesign.fr
+BV518;true;A4, plans, posters, fluorescentPosters, photos, tarps, expeditionLabels, flyers, businessCard, booklets;true;FREE;6.99;2.0;Trodesign;;bvstmeen@trodesign.fr
+BV534;true;A4, plans, posters, fluorescentPosters, photos, tarps, expeditionLabels, flyers, businessCard, booklets;true;FREE;6.99;2.0;ED;BV317;
+BV520;true;A4, plans, posters, photos, tarps, expeditionLabels, flyers, businessCard;true;FREE;6.99;2.0;Trodesign;;bvaubiere@trodesign.fr
+BV549;true;A4, plans, posters, fluorescentPosters, photos, tarps, expeditionLabels, flyers, businessCard, booklets;true;DEPOSIT;6.99;1.0;Trodesign;;bvlabege@trodesign.fr
+BV529;true;A4, plans, posters, photos, tarps;true;FREE;6.99;4.0;Externe;;
+BV517;true;A4, plans, posters, photos;true;FREE;6.99;2.0;ED;BV370;
+BV530;true;A4, plans, posters, photos, tarps;true;FREE;6.99;2.0;Externe;;
+BV543;true;A4, plans, posters, fluorescentPosters, photos, tarps, expeditionLabels, flyers, businessCard, booklets;true;SERVICE_CHARGE;6.99;7.0;ED;BV271;
+BV003;true;A4, plans, posters, photos, tarps, flyers, businessCard, booklets;false;DEPOSIT;6.99;4.0;Trodesign;;bvstgenevieve@trodesign.fr
+BV002;true;A4, plans, posters, fluorescentPosters, photos, tarps, flyers, businessCard;true;FREE;6.99;2.0;Trodesign;;bvorgeval@trodesign.fr
+BV523;true;A4, plans, posters, photos, tarps, flyers, businessCard;true;FREE;6.99;2.0;Externe;;
+BVFR;true;A4, plans, posters, fluorescentPosters, photos, tarps, expeditionLabels, flyers, businessCard, booklets;false;FREE;6.99;1.0;Externe;;
+BV001;true;A4, plans, posters, fluorescentPosters, photos, tarps, expeditionLabels, flyers, businessCard, booklets;false;FREE;6.99;2.0;Trodesign;;bvcoignieres@trodesign.fr
+BV010;true;A4, plans, posters, fluorescentPosters, photos, tarps, flyers, businessCard, booklets;false;FREE;6.99;6.0;Trodesign;;bvvauxenvelin@trodesign.fr
+BV514;true;A4, plans, posters, fluorescentPosters, photos, tarps, expeditionLabels, flyers, businessCard;true;FREE;6.99;2.0;ED;BV209;
+BV004;true;A4, plans, posters, photos, tarps, expeditionLabels, flyers, businessCard, booklets;false;SERVICE_CHARGE;6.99;10.0;Trodesign;;lesclayes@trodesign.fr
+BV515;true;A4, plans, posters, fluorescentPosters, photos, tarps, expeditionLabels, flyers, businessCard, booklets;true;FREE;6.99;5.0;Trodesign;;bvlemans@trodesign.fr
+BV000;false;A4;;;;;;;
+BV009;true;A4, plans, posters, photos;true;FREE;6.99;2.0;Trodesign;;bvbegles@trodesign.fr
+BV539;true;A4, plans, posters, photos, flyers, businessCard;true;FREE;0.0;2.0;Trodesign;;bvleboulou@trodesign.fr
+BV524;true;A4, plans, posters, fluorescentPosters, photos, tarps, expeditionLabels, flyers, booklets;true;FREE;6.99;2.0;Trodesign;;bvbaindebretagne@trodesign.fr
+BV526;true;A4, plans, posters, fluorescentPosters, photos, tarps, booklets;true;FREE;6.99;2.0;Trodesign;;bvgignac@trodesign.fr
+BV541;true;A4, plans, posters, fluorescentPosters, photos, tarps, expeditionLabels, flyers, businessCard, booklets;false;FREE;6.99;1.0;Trodesign;;bvvitre@trodesign.fr
+BV525;true;A4, plans, posters, photos, expeditionLabels, flyers, businessCard;true;FREE;6.99;2.0;Externe;;
+BV531;true;A4, plans, posters, fluorescentPosters, photos, tarps, expeditionLabels, flyers, businessCard, booklets;true;FREE;6.99;2.0;ED;BV300;
+BV535;true;A4, plans, posters, fluorescentPosters, photos, booklets;true;FREE;6.99;6.0;ED;BV450;
+BV540;true;A4, plans, posters, fluorescentPosters, photos, tarps, expeditionLabels, flyers, businessCard, booklets;true;FREE;0.0;2.0;Trodesign;;bvcesson@trodesign.fr
+BV542;true;A4, plans, posters, photos, expeditionLabels, booklets;true;FREE;6.99;2.0;Trodesign;;bvagde@trodesign.fr
+BV519;true;A4;false;FREE;6.99;2.0;Externe;;
+BV513;true;A4;true;FREE;6.99;2.0;Externe;;
+BV555;true;A4, plans, posters, fluorescentPosters, photos, tarps, expeditionLabels, flyers, businessCard, booklets;true;FREE;6.99;5.0;Externe;;
+BV553;true;A4, plans, posters, photos, tarps, expeditionLabels, flyers, businessCard, booklets;true;FREE;6.99;2.0;Trodesign;;bvblois@trodesign.fr
+MTLOG;false;A4;;;;;;;
+BV015;true;A4, plans, posters, fluorescentPosters, photos, tarps, expeditionLabels, flyers, businessCard, booklets;true;FREE;6.99;48.0;Trodesign;;bvaucamville@trodesign.fr
+BV023;true;A4, plans, posters, fluorescentPosters, photos, tarps, expeditionLabels, flyers, businessCard, booklets;true;FREE;0.0;4.0;Trodesign;;bvhaguenau@trodesign.fr
+BV125;true;A4, plans, posters, fluorescentPosters, photos, tarps, expeditionLabels, flyers, businessCard, booklets;true;FREE;6.99;1.0;Trodesign;;bvnevers@trodesign.fr
+BV145;true;A4, plans, posters, photos, expeditionLabels;true;FREE;6.99;5.0;Trodesign;;bvcoulommiers@trodesign.fr
+BV149;true;A4, plans, posters, photos, expeditionLabels, flyers, booklets;true;FREE;6.99;2.0;Externe;;
+BV153;true;A4, plans, posters, photos, tarps, expeditionLabels, flyers, businessCard, booklets;true;FREE;6.99;2.0;Trodesign;;bvbayeux@trodesign.fr
+BV158;true;A4, plans, posters, fluorescentPosters, photos, tarps, expeditionLabels, flyers, businessCard, booklets;true;DEPOSIT;30.0;2.0;Trodesign;;bvperpignan@trodesign.fr
+BV163;true;A4, plans, posters, photos, expeditionLabels;true;FREE;6.99;4.0;Trodesign;;bvstmitre@trodesign.fr
+BV175;true;A4, plans, posters, photos, tarps, expeditionLabels, booklets;true;FREE;0.0;2.0;Trodesign;;bvcoudekerque@trodesign.fr
+BV185;true;A4, plans, posters, photos, tarps, expeditionLabels, flyers, businessCard, booklets;true;FREE;6.99;2.0;Trodesign;;bvlucon@trodesign.fr
+BV206;true;A4, plans, posters, fluorescentPosters, photos, tarps, expeditionLabels, flyers, businessCard, booklets;true;FREE;6.99;3.0;Trodesign;;bvlesherbiers@trodesign.fr
+BV218;true;A4, plans, posters, photos;true;FREE;6.99;2.0;Externe;;
+BV309;true;A4, plans, posters, photos, tarps, expeditionLabels, flyers, businessCard, booklets;true;FREE;6.99;4.0;ED;BV455;
+BV008;true;A4, plans, posters, photos, tarps, expeditionLabels, flyers, businessCard, booklets;true;FREE;6.99;2.0;Trodesign;;bvcholet@trodesign.fr
+BV013;true;A4, plans, posters, photos, tarps, flyers, businessCard, booklets;true;DEPOSIT;6.99;4.0;Externe;;
+BV033;true;A4;true;FREE;6.99;5.0;ED;BV004;
+BV119;true;A4, plans, posters, fluorescentPosters, photos, tarps, expeditionLabels, flyers, businessCard, booklets;true;FREE;6.99;2.0;Trodesign;;bvamiens@trodesign.fr
+BV129;true;A4, plans, posters, photos, tarps, booklets;true;DEPOSIT;6.0;2.0;Trodesign;;bvvillejust@trodesign.fr
+BV147;true;A4, expeditionLabels, flyers, businessCard, booklets;true;FREE;6.99;2.0;ED;BV316;
+BV192;true;A4, plans, posters, fluorescentPosters, photos, tarps, flyers;true;FREE;6.99;4.0;Trodesign;;bvvillefranche@trodesign.fr

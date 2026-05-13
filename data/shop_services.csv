@@ -1,0 +1,61 @@
+﻿shop_id;has_repurchase_calculator;key_copy;it_support;pos_display_support;book_covering;flyers_and_brochures;customized_products;cards_making;wish_cards;business_cards;invitations;ink_cartridge_repurchase;photo_copying_black_white;large_format_printing;binding_laminating;buffer_machine;equipment_rental;other_service;furniture_assembly
+BV551;true;false;false;false;true;false;false;false;true;true;true;true;true;true;true;false;false;Impression photo;true
+BV512;true;false;false;true;true;true;true;true;true;true;true;true;true;true;true;true;false;;true
+BV006;true;true;false;false;true;false;false;false;true;true;true;true;true;true;true;true;true;;false
+BV518;true;false;true;true;true;true;true;true;true;true;true;true;true;true;true;true;true;;true
+BV534;true;false;true;false;true;true;false;true;true;true;true;true;true;true;true;true;false;;true
+BV520;true;false;false;true;true;true;true;true;true;true;true;true;true;true;true;true;true;;true
+BV549;true;false;true;true;true;true;true;true;true;true;true;true;true;true;true;true;true;;true
+BV529;false;false;false;false;false;true;false;false;true;true;true;true;true;true;true;true;false;;true
+BV517;true;false;false;false;false;false;false;false;true;true;true;true;true;true;true;true;false;;true
+BV530;false;false;false;true;false;false;false;false;true;true;true;true;true;true;true;true;true;Tampons minutes;true
+BV543;true;false;false;true;true;true;true;true;true;true;true;true;true;true;true;true;false;;true
+BV003;true;false;false;false;true;true;false;true;false;true;false;true;true;true;true;true;false;"ROLL UP sous 72h
+
+Création cartes de visite sur Rendez-vous";false
+BV002;true;false;false;false;true;true;true;true;true;true;true;true;true;true;true;true;false;;true
+BV523;true;false;false;false;false;true;false;true;true;true;true;true;true;true;true;true;false;;true
+BVFR;true;false;false;false;true;false;false;false;true;true;true;true;true;true;true;true;false;;false
+BV001;true;false;false;false;true;true;false;true;false;true;false;true;true;true;true;true;false;;true
+BV010;true;true;false;true;true;true;false;true;true;true;true;true;true;true;true;true;false;;true
+BV514;true;false;true;true;true;true;true;true;true;true;true;true;true;true;true;true;true;;true
+BV004;true;true;true;true;true;true;false;true;true;true;true;true;true;true;true;true;true;Impression photo;true
+BV515;true;false;false;true;true;true;true;true;true;true;true;true;true;true;true;true;true;Création graphique 1250 les 15min;true
+BV000;true;false;false;false;false;false;false;true;true;true;true;true;true;true;true;true;true;Livraison et Montage Mobilier Bureau Paris;false
+BV009;false;true;false;true;true;true;true;true;true;true;true;true;true;true;true;true;false;"développement photo minute , impression et scan de plans, affiches et bâches, transfert films vidéos , personnalisation de vos documents, reliures et plastifications  ( y-compris en grandes quantités, ou jusqu'au format A2), 
+
+LIVRAISON DU MOBILIER , des CARTONS DE RAMETTES DE PAPIER ( voir conditions en magasin )";true
+BV539;true;true;false;false;true;true;false;true;true;true;true;true;true;true;true;true;false;;true
+BV524;true;false;false;true;true;true;true;true;true;true;true;true;true;true;true;true;false;;true
+BV526;true;false;true;false;true;false;false;false;true;true;true;true;true;true;true;true;false;;true
+BV541;true;false;true;true;true;true;true;true;true;true;true;true;true;true;true;true;true;;true
+BV525;true;false;false;false;true;true;false;true;true;true;true;true;true;true;true;true;false;;true
+BV531;true;false;false;true;true;true;true;true;true;true;true;true;true;true;true;true;true;;true
+BV535;true;false;false;false;true;true;false;true;true;true;true;true;true;true;true;true;false;;true
+BV540;true;false;true;true;true;true;true;true;true;true;true;true;true;true;true;true;true;;true
+BV542;true;false;false;false;true;false;false;false;true;true;true;true;true;true;true;true;false;;false
+BV519;false;true;false;false;false;true;false;true;true;true;true;false;true;true;true;true;false;;true
+BV513;false;false;false;false;false;false;false;false;true;true;true;true;true;false;true;true;false;;false
+BV555;true;false;false;true;true;true;true;true;true;true;true;true;true;true;true;true;true;;true
+BV553;true;false;true;true;true;true;true;true;true;true;true;true;true;true;true;true;true;Impression photo;true
+MTLOG;false;false;false;false;false;false;false;true;true;true;true;true;true;true;true;true;true;Livraison et Montage Mobilier Bureau Paris;false
+BV015;true;false;false;false;true;true;true;true;true;true;true;true;true;true;true;true;false;;false
+BV023;true;false;false;true;true;true;true;true;true;true;true;true;true;true;true;true;false;;true
+BV125;true;true;false;true;true;true;true;true;true;true;true;true;true;true;true;true;true;Numérisation grand format, verres trempés tous téléphones, plastification A2, projection 3d bureau, aménagement de bureau, montage de bureau;true
+BV145;true;true;false;false;true;true;false;true;true;true;true;true;true;true;true;true;true;;true
+BV149;true;false;false;false;false;true;false;true;true;true;true;true;true;true;true;true;true;Relais la POSTE. Envoi ou livraison de commande.;true
+BV153;true;false;false;false;true;true;true;true;true;true;true;true;true;true;true;true;true;;false
+BV158;true;true;true;true;true;true;false;true;false;true;true;true;true;true;true;true;true;massicot;true
+BV163;true;true;false;false;true;false;false;false;true;true;true;true;true;true;true;true;false;;true
+BV175;true;true;false;false;true;true;false;true;false;false;false;true;true;true;true;true;false;;true
+BV185;false;false;false;true;true;true;true;true;true;true;true;true;true;true;true;true;true;LIVRAISON voir conditions en magasin;true
+BV206;true;false;false;true;true;true;true;true;true;true;true;true;true;true;true;true;true;;true
+BV218;false;false;false;false;false;false;false;false;false;false;false;true;true;true;true;true;false;;false
+BV309;true;false;true;true;true;true;true;true;true;true;true;true;true;true;true;true;true;FLYERS, DIBON, BACHES, KAKEMONO, AKILUX, ETIQUETTES, STICKERS, DEPLIANT, AUTO COLLANT GRAND FORMAT, ROLL-UP, BEACH FLAG...;true
+BV008;true;true;false;false;true;true;false;true;true;true;true;true;true;true;true;true;true;Infographie Personnalisée;false
+BV013;false;false;false;false;true;true;false;true;true;true;false;false;true;true;true;false;false;Scan grand format;true
+BV033;false;false;false;false;false;true;false;true;false;true;false;true;true;false;true;true;false;;false
+BV119;true;true;false;false;true;true;true;true;true;true;true;true;true;true;true;true;false;;true
+BV129;false;false;true;true;true;true;true;true;true;true;true;true;true;true;true;true;false;;true
+BV147;true;false;false;false;true;true;false;true;true;true;true;true;true;false;true;true;true;;true
+BV192;true;false;false;false;false;true;false;true;false;false;false;true;true;true;true;true;true;;true
