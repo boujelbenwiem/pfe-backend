@@ -43,4 +43,4 @@ def json_to_excel(json_file, output_excel_file):
     print(f"   {len(df.columns)} colonnes générées")
 
 
-json_to_excel("missing_products.json", "raw_products.xlsx")
+json_to_excel("promotions2.json", "promotions2.xlsx")

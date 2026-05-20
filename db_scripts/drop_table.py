@@ -3,7 +3,7 @@ import os
 
 # ── Parameters ──────────────────────────────────────────────────────────────
 DB_PATH    = "../bv-auth-backend/bv_datawarehouse.duckdb"
-TABLE_NAME = "orders"   # table to drop
+TABLE_NAME = "promotions"   # table to drop
 # ────────────────────────────────────────────────────────────────────────────
 
 

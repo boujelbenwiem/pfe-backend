@@ -64,8 +64,8 @@ def main():
     # -----------------------------------------------------------------------
     # ✏️  PARAMÈTRES — modifie ici directement
     # -----------------------------------------------------------------------
-    SOURCE      = "../pricing_by_shop.csv"   # fichier source (CSV ou Excel)
-    SOURCE_COL  = "sku"                 # colonne SKU dans le fichier source
+    SOURCE      = "../promotion_by_product.csv"   # fichier source (CSV ou Excel)
+    SOURCE_COL  = "product_sku"                 # colonne SKU dans le fichier source
     SOURCE_SEP  = None                  # séparateur CSV source (None = auto)
 
     TARGET      = "../products.csv"      # fichier cible  (CSV ou Excel)

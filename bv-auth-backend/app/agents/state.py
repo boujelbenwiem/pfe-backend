@@ -1,5 +1,3 @@
-# backend/app/agents/state.py
-
 from typing import TypedDict, List, Dict, Optional, Literal
 
 
@@ -11,13 +9,15 @@ class AgentState(TypedDict):
     user_role: str
     user_shop_id: Optional[str]
     question: str
-    timestamp: str 
+    timestamp: str
+    conversation_id: Optional[str]
+
     # Agent 1 - Classification
     intention: Optional[Literal["analytique", "metier", "generale", "erreur"]]
 
     # Agent 2 - Generation SQL
-    retrieved_chunks: Optional[List[Dict]]   # avant reranking
-    reranked_chunks: Optional[List[Dict]]    # apres reranking
+    retrieved_chunks: Optional[List[Dict]]   
+    reranked_chunks: Optional[List[Dict]]    
     sql_query: Optional[str]
     sql_error: Optional[str]
     retry_count: int
@@ -25,7 +25,7 @@ class AgentState(TypedDict):
     # Agent 3 - Execution
     query_result: Optional[List[tuple]]
     query_columns: Optional[List[str]]
-    filters_applied: Optional[List[str]]   # filtres SQL injectes par le MCP (ex: shop_id)
+    filters_applied: Optional[List[str]]  
     execution_error: Optional[str]
 
     # Agent 4 - Formatage

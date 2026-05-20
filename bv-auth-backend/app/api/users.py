@@ -1,6 +1,3 @@
-# app/api/users.py
-# Routes de gestion des utilisateurs (CRUD)
-
 from fastapi import APIRouter, Depends, HTTPException, status, Query
 import duckdb
 from typing import Optional
@@ -21,15 +18,12 @@ from app.core.deps import (
 )
 from app.models.user import User, UserRole
 
-# Création du routeur
-# prefix="/users" : toutes les routes commenceront par /users
-# tags=["Users"] : pour la documentation Swagger
+
 router = APIRouter(prefix="/users", tags=["Users"])
 
 
-# ============================================================
+
 # ROUTES POUR L'UTILISATEUR CONNECTÉ
-# ============================================================
 
 @router.get(
     "/me",
@@ -147,9 +141,7 @@ async def delete_me(
     )
 
 
-# ============================================================
-# ROUTES ADMIN (nécessitent le rôle ADMIN)
-# ============================================================
+# ROUTES ADMIN 
 
 @router.get(
     "/",
@@ -187,7 +179,6 @@ async def get_all_users(
     )
 
 
-# IMPORTANT: /stats/count DOIT être avant /{user_id} sinon "stats" serait interprété comme un user_id
 @router.get(
     "/stats/count",
     summary="Statistiques utilisateurs",

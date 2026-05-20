@@ -1,6 +1,3 @@
-# backend/app/agents/agent_formattage.py
-# Responsabilité unique : décider du format et formater la réponse finale
-
 import json
 import logging
 from typing import Any, Dict, List, Literal
@@ -22,10 +19,7 @@ _intro_llm = ChatGroq(
     temperature=0.3,
 )
 
-
-# ---------------------------------------------------------------------------
 # Helpers
-# ---------------------------------------------------------------------------
 
 def _to_dicts(state: AgentState) -> List[Dict]:
     """Convertit query_result (list of tuples) + query_columns en list of dicts."""
@@ -84,9 +78,8 @@ def _llm_intro(question: str, n_rows: int, columns: List[str], output_type: str 
         return f"Voici les résultats pour : {question.rstrip('?').strip()}"
 
 
-# ---------------------------------------------------------------------------
 # Nœud 1 : Décision du format
-# ---------------------------------------------------------------------------
+
 
 def decide_format(state: AgentState) -> AgentState:
     """
@@ -162,9 +155,7 @@ def _llm_decide_chart_type(
         return "bar"
 
 
-# ---------------------------------------------------------------------------
 # Nœud 2 : Formatage texte (Groq + anonymisation des données)
-# ---------------------------------------------------------------------------
 
 _text_llm = ChatGroq(
     model="llama-3.3-70b-versatile",
@@ -210,14 +201,18 @@ def format_as_text(state: AgentState) -> AgentState:
     if not data:
         error = state.get("execution_error") or state.get("sql_error") or state.get("error")
         if error:
-            return {**state, "formatted_response": {
+            result = {**state, "formatted_response": {
                 "type": "text",
                 "content": "Je n'ai pas pu exécuter cette requête. Veuillez reformuler votre question.",
             }}
-        return {**state, "formatted_response": {
-            "type": "text",
-            "content": "Aucun résultat trouvé pour cette question.",
-        }}
+        else:
+            result = {**state, "formatted_response": {
+                "type": "text",
+                "content": "Aucun résultat trouvé pour cette question.",
+            }}
+        return result
+    
+
 
     # Anonymiser : on envoie les noms de colonnes + placeholders, pas les vraies valeurs
     anon_data, mapping = _anonymize_data(data)
@@ -246,12 +241,11 @@ def format_as_text(state: AgentState) -> AgentState:
         logger.warning("Text formatting LLM failed: %s", e)
         content = " | ".join(f"{k}: {v}" for k, v in data[0].items()) if data else "Aucune donnée."
 
-    return {**state, "formatted_response": {"type": "text", "content": content}}
+    result= {**state, "formatted_response": {"type": "text", "content": content}}
+    return result
 
 
-# ---------------------------------------------------------------------------
 # Nœud 3 : Formatage tableau
-# ---------------------------------------------------------------------------
 
 def format_as_table(state: AgentState) -> AgentState:
     """Formate les données en structure tableau."""
@@ -267,7 +261,7 @@ def format_as_table(state: AgentState) -> AgentState:
     col_names = list(data[0].keys())
     intro = _llm_intro(state["question"], len(data), col_names, output_type=state.get("output_type", "table"))
 
-    return {
+    result = {
         **state,
         "formatted_response": {
             "type": "table",
@@ -278,11 +272,10 @@ def format_as_table(state: AgentState) -> AgentState:
             "options": {"sortable": True, "pagination": len(data) > 10, "pageSize": 10},
         },
     }
+    return result
 
 
-# ---------------------------------------------------------------------------
 # Nœud 4 : Formatage graphique
-# ---------------------------------------------------------------------------
 
 def format_as_chart(state: AgentState) -> AgentState:
     """Formate les données en structure graphique."""
@@ -296,7 +289,7 @@ def format_as_chart(state: AgentState) -> AgentState:
     chart_type = state.get("chart_type") or "bar"
     intro = _llm_intro(state["question"], len(data), columns, output_type=state.get("output_type", "chart"))
 
-    return {
+    result = {
         **state,
         "formatted_response": {
             "type": "chart",
@@ -312,11 +305,10 @@ def format_as_chart(state: AgentState) -> AgentState:
             },
         },
     }
+    return result
 
 
-# ---------------------------------------------------------------------------
 # Router — utilisé par l'orchestrateur
-# ---------------------------------------------------------------------------
 
 def route_format(state: AgentState) -> Literal["format_as_text", "format_as_table", "format_as_chart"]:
     output_type = state.get("output_type", "text")
@@ -327,9 +319,7 @@ def route_format(state: AgentState) -> Literal["format_as_text", "format_as_tabl
     return "format_as_text"
 
 
-# ---------------------------------------------------------------------------
 # Test standalone
-# ---------------------------------------------------------------------------
 
 if __name__ == "__main__":
     from datetime import datetime, timezone

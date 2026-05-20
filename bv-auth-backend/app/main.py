@@ -13,10 +13,9 @@ from app.core.config import settings
 from app.db.init_db import init_db, create_default_admin, check_db
 from app.api import auth, users
 from app.api.chat import router as chat_router
+from app.api.chat_history import router as chat_history_router
 
-# ============================================================
 # CONFIGURATION DES LOGS
-# ============================================================
 
 # Configuration du système de logs
 logging.basicConfig(
@@ -26,9 +25,8 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 
-# ============================================================
 # GESTION DU CYCLE DE VIE (LIFESPAN)
-# ============================================================
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -77,10 +75,8 @@ async def lifespan(app: FastAPI):
     logger.info("🛑 Arrêt de l'application BV Auth Backend")
     logger.info("=" * 50)
 
-
-# ============================================================
 # CRÉATION DE L'APPLICATION FASTAPI
-# ============================================================
+
 
 # Créer l'instance FastAPI avec la gestion du cycle de vie
 app = FastAPI(
@@ -140,6 +136,7 @@ app.include_router(auth.router)
 # Inclure les routes de gestion des utilisateurs
 app.include_router(users.router)
 app.include_router(chat_router)
+app.include_router(chat_history_router)
 
 # Interface de test
 _UI_PATH = Path(__file__).parent / "static" / "chat.html"
@@ -236,9 +233,7 @@ async def general_exception_handler(request, exc):
     )
 
 
-# ============================================================
 # INFORMATION SUR L'APPLICATION (optionnel)
-# ============================================================
 
 @app.get("/info", tags=["Info"])
 async def get_info():

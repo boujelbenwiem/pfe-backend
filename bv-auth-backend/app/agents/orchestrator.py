@@ -157,6 +157,7 @@ def build_initial_state(
     user_id: str,
     user_role: str,
     user_shop_id: str = None,
+    conversation_id: Optional[str] = None,
 ) -> AgentState:
     """Construit l'état initial propre pour une nouvelle requête."""
     return {
@@ -165,6 +166,7 @@ def build_initial_state(
         "user_shop_id": user_shop_id,
         "question": question,
         "timestamp": datetime.now(timezone.utc).isoformat(),
+        "conversation_id": conversation_id,
         "intention": None,
         "access_denied": None,
         "retrieved_chunks": None,

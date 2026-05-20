@@ -10,22 +10,44 @@ DB_PATH = "../bv-auth-backend/bv_datawarehouse.duckdb"
 TABLES = [
   
     """
-    CREATE TABLE IF NOT EXISTS orders_items (
-    order_id INTEGER,
-    order_number VARCHAR(50) ,
+    CREATE TABLE IF NOT EXISTS promotions (
+    promo_id VARCHAR(100) PRIMARY KEY,
+    promo_type VARCHAR(50),
+    promo_value INTEGER,
+    promo_renderingType VARCHAR(50),
+    label VARCHAR(200),
+    territoryId VARCHAR(10),
+    version INTEGER,
     created_at TIMESTAMP,
-    customer_id INTEGER,
-    item_id INTEGER,
-    sku INTEGER,
-    product_name VARCHAR(500),
-    qty_ordered INTEGER,
-    FOREIGN KEY (sku) REFERENCES products(sku)
+    last_updated TIMESTAMP,
+    is_active BOOLEAN,
+    benefit_rule VARCHAR(100),
+    X VARCHAR(50),
+    Y VARCHAR(50),
+    promo_name VARCHAR(200),
+    promotion_role VARCHAR(50)
 );
-
-
-
-
-
+    """,
+    """
+    CREATE TABLE IF NOT EXISTS promotion_by_shop (
+    promo_id VARCHAR(100),
+    shop_id VARCHAR(50),
+    start_date TIMESTAMP,
+    end_date TIMESTAMP,
+    PRIMARY KEY (promo_id, shop_id),
+    FOREIGN KEY (promo_id) REFERENCES promotions(promo_id),   
+);
+    """,
+    """
+    CREATE TABLE IF NOT EXISTS promotion_by_product (
+    promo_id VARCHAR(100),
+    product_sku INTEGER,
+    reference_price DECIMAL(10,2),
+    discount_value DECIMAL(10,2),
+    PRIMARY KEY (promo_id, product_sku),
+    FOREIGN KEY (promo_id) REFERENCES promotions(promo_id),
+    FOREIGN KEY (product_sku) REFERENCES products(sku)
+);
     """,
     
 

@@ -634,18 +634,72 @@
     "description": "Gérer les pénalités de livraison.",
     "relations": []
   },
-  {
-    "type": "table_schema",
-    "table_name": "promotions",
-    "category": "identification",
-    "columns": [
-      {"name": "promo_id", "type": "VARCHAR(100)", "pk": false, "description": "Identifiant de la promotion"},
-      {"name": "promo_label", "type": "VARCHAR(200)", "pk": false, "description": "Libellé de la promotion"},
-      {"name": "promo_name", "type": "VARCHAR(200)", "pk": false, "description": "Nom de la promotion"}
-    ],
-    "description": "Identifier une promotion par son ID, libellé ou nom.",
-    "relations": []
-  },
+ {
+  "type": "table_schema",
+  "table_name": "promotions",
+  "category": "identification",
+  "columns": [
+    {"name": "promo_id", "type": "VARCHAR(100)", "pk": true, "description": "Identifiant unique de la promotion"},
+    {"name": "promo_name", "type": "VARCHAR(200)", "pk": false, "description": "Nom commercial de la promotion"},
+    {"name": "label", "type": "VARCHAR(200)", "pk": false, "description": "Libellé de la promotion"},
+    {"name": "promo_type", "type": "VARCHAR(50)", "pk": false, "description": "Type de promotion (PER_CART, PER_ITEM)"},
+    {"name": "promotion_role", "type": "VARCHAR(50)", "pk": false, "description": "Rôle de la promotion"}
+  ],
+  "description": "Identifier une promotion par son ID, son nom, son libellé ou son type.",
+  "relations": [
+    "promotions.promo_id → promotions_products.promo_id",
+    "promotions.promo_id → promotions_shops.promo_id"
+  ]
+},
+{
+  "type": "table_schema",
+  "table_name": "promotions",
+  "category": "details_promotion",
+  "columns": [
+    {"name": "promo_id", "type": "VARCHAR(100)", "pk": true, "description": "Identifiant unique de la promotion"},
+    {"name": "promo_value", "type": "INTEGER", "pk": false, "description": "Valeur de la remise en centimes"},
+    {"name": "promo_renderingType", "type": "VARCHAR(50)", "pk": false, "description": "Type d'affichage de la remise"},
+    {"name": "territoryId", "type": "VARCHAR(10)", "pk": false, "description": "ID du territoire concerné"},
+    {"name": "version", "type": "INTEGER", "pk": false, "description": "Version de la promotion"},
+    {"name": "created_at", "type": "TIMESTAMP", "pk": false, "description": "Date de création"},
+    {"name": "last_updated", "type": "TIMESTAMP", "pk": false, "description": "Date de dernière mise à jour"},
+    {"name": "is_active", "type": "BOOLEAN", "pk": false, "description": "Statut actif ou inactif"},
+    {"name": "benefit_rule", "type": "VARCHAR(100)", "pk": false, "description": "Règle de bénéfice (INFO_SKU, etc.)"},
+    {"name": "X", "type": "VARCHAR(50)", "pk": false, "description": "Champ générique X"},
+    {"name": "Y", "type": "VARCHAR(50)", "pk": false, "description": "Champ générique Y"}
+  ],
+  "description": "Consulter les détails complets d'une promotion : dates, valeurs, statut et règles.",
+  "relations": [
+    "promotions.promo_id → promotion_by_product.promo_id",
+    "promotions.promo_id → promotion_by_shop.promo_id"
+  ]
+},
+{
+  "type": "table_schema",
+  "table_name": "promotion_by_shop",
+  "category": "promotions",
+  "columns": [
+    {"name": "promo_id", "type": "VARCHAR(100)", "pk": true, "description": "Identifiant de la promotion (clé étrangère)"},
+    {"name": "shop_id", "type": "VARCHAR(50)", "pk": true, "description": "Identifiant du magasin (clé étrangère)"},
+    {"name": "start_date", "type": "TIMESTAMP", "pk": false, "description": "Date de début de validité de la promotion"},
+    {"name": "end_date", "type": "TIMESTAMP", "pk": false, "description": "Date de fin de validité de la promotion"}
+  ],
+  "description": "Associer une promotion aux magasins où elle est applicable avec sa période de validité.",
+  "relations": []
+},
+{
+  "type": "table_schema",
+  "table_name": "promotion_by_product",
+  "category": "promotions",
+  "columns": [
+    {"name": "promo_id", "type": "VARCHAR(100)", "pk": true, "description": "Identifiant de la promotion (clé étrangère)"},
+    {"name": "product_sku", "type": "INTEGER", "pk": true, "description": "Référence du produit concerné (clé étrangère)"},
+    {"name": "reference_price", "type": "DECIMAL(10,2)", "pk": false, "description": "Prix de référence du produit avant remise"},
+    {"name": "discount_value", "type": "DECIMAL(10,2)", "pk": false, "description": "Valeur de la remise (montant fixe ou pourcentage)"}
+  ],
+  "description": "Associer une promotion aux produits concernés avec leur prix de référence et la remise appliquée.",
+  "relations": []
+},
   {
     "type": "table_schema",
     "table_name": "promotions",
@@ -659,9 +713,7 @@
       {"name": "promotion_role", "type": "VARCHAR(50)", "pk": false, "description": "Rôle de la promotion"}
     ],
     "description": "Consulter les détails et règles des promotions.",
-    "relations": [
-      "promotions.product_sku → products.sku"
-    ]
+    "relations": []
   },
   {
   "type": "table_schema",

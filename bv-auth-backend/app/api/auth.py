@@ -1,6 +1,3 @@
-# app/api/auth.py
-# Routes d'authentification : inscription, connexion, déconnexion
-
 from fastapi import APIRouter, Depends, HTTPException, Response, status
 import duckdb
 
@@ -13,15 +10,11 @@ from app.core.security import create_access_token
 from app.core.config import settings
 from app.models.user import User
 
-# Création du routeur
-# prefix="/auth" : toutes les routes commenceront par /auth
-# tags=["Authentication"] : pour la documentation Swagger
+
 router = APIRouter(prefix="/auth", tags=["Authentication"])
 
 
-# ============================================================
-# ROUTES PUBLIQUES (sans authentification)
-# ============================================================
+# ROUTES PUBLIQUES 
 
 @router.post(
     "/register",
@@ -37,12 +30,12 @@ async def register(
     """
     Inscription d'un nouvel utilisateur.
     
-    - **username**: Nom d'utilisateur (3-100 caractères)
+    - **username**: Nom d'utilisateur 
     - **email**: Adresse email valide
-    - **password**: Mot de passe (min 8 caractères, 1 majuscule, 1 chiffre)
+    - **password**: Mot de passe 
     - **role**: Rôle (ADMIN, STORE_MANAGER, MARKETING, CRM, ACHATS)
-    - **store_id**: ID du magasin (optionnel, pour STORE_MANAGER)
-    - **department**: Département (optionnel)
+    - **store_id**: ID du magasin (requis pour STORE_MANAGER)
+    - **department**: Département 
     """
     service = UserService(conn)
     
@@ -104,7 +97,7 @@ async def login(
 @router.post(
     "/logout",
     summary="Déconnexion",
-    description="Déconnecte l'utilisateur (côté client, il suffit de supprimer le token)"
+    description="Déconnecte l'utilisateur "
 )
 async def logout(response: Response, current_user: User = Depends(get_current_user)):
     """

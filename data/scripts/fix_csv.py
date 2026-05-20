@@ -9,14 +9,15 @@ import sys
 # CONFIGURATION - Modifier ici
 # ============================================================
 
-FILE = "../commandes.csv"              # Nom du fichier CSV (dans le dossier csv/)
+FILE = "../promotions.csv"              # Nom du fichier CSV (dans le dossier csv/)
 SEP = ";"                        # Séparateur
 ENCODING_IN = "utf-8"             # Encodage lecture
 ENCODING_OUT = "utf-8"          # Encodage sortie (utf-8-sig = avec BOM pour Excel)
 
 # Colonnes booléennes: VRAI/FAUX et/ou 0/1 -> true/false
 BOOL_COLS = [
-    
+    "is_active"
+
 ]
 
 # Colonnes numériques: virgule -> point
@@ -35,6 +36,7 @@ DATETIME_COLS = {
     # "nom_colonne": "format_source"
     
     "created_at": "%d/%m/%Y %H:%M",
+    "last_updated": "%d/%m/%Y %H:%M",
 }
 
 # =================================================

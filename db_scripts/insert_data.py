@@ -3,8 +3,8 @@ import os
 
 # ── Parameters ──────────────────────────────────────────────────────────────
 DB_PATH    = "../bv-auth-backend/bv_datawarehouse.duckdb"
-CSV_FILE   = "../data/commandes.csv"   # path to the CSV file to load
-TABLE_NAME = "orders_items"                     # target table in the database
+CSV_FILE   = "../data/promotion_by_shop.csv"   # path to the CSV file to load
+TABLE_NAME = "promotion_by_shop"                     # target table in the database
 CSV_SEP    = ";"                            # column separator in the CSV
 # ────────────────────────────────────────────────────────────────────────────
 

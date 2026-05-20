@@ -1,0 +1,17 @@
+quelles sont les produits avec la promotion id OPE-SEPTEMBRE-2-AMOUNT-DISCOUNT ?
+quelles sont les produits de la category Smartphones
+les top 5 produits les plus vendus selon nom et qte vendu
+les prix du produits 1282 dans le magasin BVFR
+les prix du produits 1282 selon tous les magasin
+quelles le prix totale du commande id 3705284
+les tops customers
+quelle est la commande la plus cher
+le produit 1282 est disponible en click et collect ?
+
+les prix du produits 1282 dans le magasin BVFR
+quelle est le stock du produit 1282 dans le magasin BV551
+quelle est le stock du produit 1282 dans le magasin BV551 pour le shipping
+les prix du produits 1282 dans le magasin BV551
+
+
+

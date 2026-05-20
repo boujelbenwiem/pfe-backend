@@ -1,5 +1,3 @@
-# backend/app/agents/test_pipeline.py
-
 import time
 
 import pandas as pd
