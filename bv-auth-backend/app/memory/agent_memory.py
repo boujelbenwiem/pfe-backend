@@ -14,7 +14,7 @@ class AgentMemory:
         if not conversation_id:
             return ""
 
-        # Import local pour éviter les imports circulaires
+        
         from app.services.chat_history_service import ChatHistoryService
 
         service = ChatHistoryService(db_path=settings.DATABASE_PATH)

@@ -12,6 +12,9 @@ from opik import configure as opik_configure
 from opik import get_global_client as opik_client
 from opik.integrations.langchain import OpikTracer
 
+from langfuse import get_client as get_langfuse_client
+from langfuse.langchain import CallbackHandler as LangfuseCallbackHandler
+
 from app.core.config import settings
 from app.agents.state import AgentState
 from app.agents.agent_classifier import classify_query, answer_directly
@@ -26,17 +29,23 @@ from app.agents.agent_access_control import check_shop_access, route_access
 logger = logging.getLogger(__name__)
 
 # ---------------------------------------------------------------------------
-# Opik tracing setup
+# Opik tracing setup (kept for future use)
 # ---------------------------------------------------------------------------
 
-if settings.OPIK_API_KEY:
-    opik_configure(
-        api_key=settings.OPIK_API_KEY,
-        project_name=settings.OPIK_PROJECT_NAME,
-        use_local=False,
-    )
-else:
-    opik_configure(use_local=True, project_name=settings.OPIK_PROJECT_NAME)
+if settings.TRACING_BACKEND == "opik":
+    if settings.OPIK_API_KEY:
+        opik_configure(
+            api_key=settings.OPIK_API_KEY,
+            project_name=settings.OPIK_PROJECT_NAME,
+            use_local=False,
+        )
+    else:
+        opik_configure(use_local=True, project_name=settings.OPIK_PROJECT_NAME)
+
+# ---------------------------------------------------------------------------
+# Langfuse tracing setup (v4 SDK — uses env vars LANGFUSE_SECRET_KEY,
+# LANGFUSE_PUBLIC_KEY, LANGFUSE_BASE_URL automatically via get_client())
+# ---------------------------------------------------------------------------
 
 
 def _make_tracer() -> Optional["OpikTracer"]:
@@ -136,19 +145,43 @@ def _get_pipeline_graph():
 
 
 def run_pipeline(state: AgentState, session_id: Optional[str] = None) -> AgentState:
-    """Point d'entrée principal — exécute le pipeline complet avec tracing Opik."""
-    tracer = _make_tracer()
+    """Point d'entrée principal — exécute le pipeline complet avec tracing Opik ou Langfuse."""
     config: dict = {}
-    if tracer:
-        config["callbacks"] = [tracer]
-    if session_id:
-        config["run_name"] = session_id
+
+    if settings.TRACING_BACKEND == "langfuse":
+        # Langfuse v4: CallbackHandler auto-reads env vars (LANGFUSE_SECRET_KEY,
+        # LANGFUSE_PUBLIC_KEY, LANGFUSE_BASE_URL). We use propagate_attributes to
+        # attach user_id and session_id to all spans in the trace.
+        langfuse_handler = LangfuseCallbackHandler()
+        config["callbacks"] = [langfuse_handler]
+        config["metadata"] = {
+            "langfuse_session_id": session_id or state.get("conversation_id", ""),
+            "langfuse_user_id": state.get("user_id", ""),
+            "langfuse_tags": ["multi-agent-pipeline", state.get("user_role", "")],
+        }
+        if session_id:
+            config["run_name"] = f"pipeline-{session_id}"
+    else:
+        tracer = _make_tracer()
+        if tracer:
+            config["callbacks"] = [tracer]
+        if session_id:
+            config["run_name"] = session_id
+
     result = _get_pipeline_graph().invoke(state, config=config or None)
-    # Flush async trace buffer so all spans are uploaded before returning
-    try:
-        opik_client().flush()
-    except Exception:
-        pass
+
+    # Flush trace buffer
+    if settings.TRACING_BACKEND == "langfuse":
+        try:
+            get_langfuse_client().flush()
+        except Exception:
+            pass
+    else:
+        try:
+            opik_client().flush()
+        except Exception:
+            pass
+
     return result
 
 

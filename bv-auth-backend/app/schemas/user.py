@@ -140,3 +140,55 @@ class PasswordChangeRequest(BaseModel):
         if not any(c.isdigit() for c in v):
             raise ValueError("Le nouveau mot de passe doit contenir au moins un chiffre")
         return v
+
+
+class PasswordResetRequest(BaseModel):
+    """
+    Schéma pour demander une réinitialisation de mot de passe.
+    """
+    email: EmailStr = Field(..., description="Adresse email de l'utilisateur")
+
+
+class PasswordResetConfirm(BaseModel):
+    """
+    Schéma pour confirmer la réinitialisation de mot de passe avec un token.
+    """
+    token: str = Field(..., min_length=1, description="Token de réinitialisation")
+    new_password: str = Field(..., min_length=8, description="Nouveau mot de passe")
+    
+    @field_validator('new_password')
+    @classmethod
+    def validate_new_password(cls, v: str) -> str:
+        if not any(c.isupper() for c in v):
+            raise ValueError("Le mot de passe doit contenir au moins une majuscule")
+        if not any(c.isdigit() for c in v):
+            raise ValueError("Le mot de passe doit contenir au moins un chiffre")
+        return v
+
+
+class AdminCreateUserRequest(BaseModel):
+    """
+    Schéma pour la création d'un utilisateur par l'admin.
+    """
+    username: str = Field(..., min_length=3, max_length=100, description="Nom d'utilisateur")
+    email: EmailStr = Field(..., description="Adresse email valide")
+    role: str = Field(default="STORE_MANAGER", description="Rôle de l'utilisateur")
+    store_id: Optional[str] = Field(None, max_length=50, description="ID du magasin")
+    department: Optional[str] = Field(None, max_length=50, description="Département")
+    
+    @field_validator('role')
+    @classmethod
+    def validate_role(cls, v: str) -> str:
+        from app.models.user import UserRole
+        if not UserRole.is_valid(v):
+            raise ValueError(f"Rôle invalide. Rôles acceptés: {[r.value for r in UserRole]}")
+        return v
+
+
+class AdminCreateUserResponse(BaseModel):
+    """
+    Réponse après création d'un utilisateur par l'admin.
+    """
+    user: UserResponse = Field(..., description="Données de l'utilisateur créé")
+    message: str = Field(..., description="Message de confirmation")
+    reset_link_sent: bool = Field(default=True, description="Lien de réinitialisation envoyé par email")

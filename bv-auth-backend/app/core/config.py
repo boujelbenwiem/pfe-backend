@@ -21,5 +21,17 @@ class Settings:
     OPIK_PROJECT_NAME: str = os.getenv("OPIK_PROJECT_NAME", "bv-multi-agent")
     OPIK_WORKSPACE: str = os.getenv("OPIK_WORKSPACE", "wiem-boujelben")
     OPENAI_API_KEY: str = os.getenv("OPENAI_API_KEY", "")
+    # Langfuse tracing (fallback when Opik is unavailable)
+    # The Langfuse SDK v4 auto-reads LANGFUSE_SECRET_KEY, LANGFUSE_PUBLIC_KEY,
+    # and LANGFUSE_BASE_URL from env. We expose them here for explicit access.
+    LANGFUSE_SECRET_KEY: str = os.getenv("LANGFUSE_SECRET_KEY", "")
+    LANGFUSE_PUBLIC_KEY: str = os.getenv("LANGFUSE_PUBLIC_KEY", "")
+    LANGFUSE_BASE_URL: str = os.getenv("LANGFUSE_BASE_URL", "https://cloud.langfuse.com")
+    # "opik" | "langfuse" — switch active tracer without removing the other
+    TRACING_BACKEND: str = os.getenv("TRACING_BACKEND", "opik")
+    AWS_ACCESS_KEY_ID: str = os.getenv("AWS_ACCESS_KEY_ID", "")
+    AWS_SECRET_ACCESS_KEY: str = os.getenv("AWS_SECRET_ACCESS_KEY", "")
+    AWS_REGION: str = os.getenv("AWS_REGION", "")
+    SES_FROM_EMAIL: str = os.getenv("SES_FROM_EMAIL", "")
 
 settings = Settings()

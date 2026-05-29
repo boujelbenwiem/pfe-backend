@@ -1,12 +1,17 @@
 from fastapi import APIRouter, Depends, HTTPException, Response, status
 import duckdb
 
-from app.schemas.user import UserRegister, UserLogin, UserResponse
+from app.schemas.user import UserLogin, UserResponse, PasswordResetConfirm
 from app.schemas.token import TokenResponse
 from app.services.user_service import UserService
 from app.db.session import get_db_connection
 from app.core.deps import get_current_user
-from app.core.security import create_access_token
+from app.core.security import (
+    create_access_token,
+    verify_password_reset_token,
+    hash_password,
+    consume_password_reset_token
+)
 from app.core.config import settings
 from app.models.user import User
 
@@ -15,44 +20,6 @@ router = APIRouter(prefix="/auth", tags=["Authentication"])
 
 
 # ROUTES PUBLIQUES 
-
-@router.post(
-    "/register",
-    response_model=UserResponse,
-    status_code=status.HTTP_201_CREATED,
-    summary="Inscription d'un nouvel utilisateur",
-    description="Crée un nouveau compte utilisateur. Le mot de passe est automatiquement haché."
-)
-async def register(
-    user_data: UserRegister,
-    conn: duckdb.DuckDBPyConnection = Depends(get_db_connection)
-):
-    """
-    Inscription d'un nouvel utilisateur.
-    
-    - **username**: Nom d'utilisateur 
-    - **email**: Adresse email valide
-    - **password**: Mot de passe 
-    - **role**: Rôle (ADMIN, STORE_MANAGER, MARKETING, CRM, ACHATS)
-    - **store_id**: ID du magasin (requis pour STORE_MANAGER)
-    - **department**: Département 
-    """
-    service = UserService(conn)
-    
-    try:
-        user = service.register_user(user_data)
-        return user
-    except ValueError as e:
-        raise HTTPException(
-            status_code=status.HTTP_409_CONFLICT,
-            detail=str(e)
-        )
-    except Exception as e:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail=str(e)
-        )
-
 
 @router.post(
     "/login",
@@ -95,9 +62,53 @@ async def login(
 
 
 @router.post(
+    "/setup-password",
+    summary="Configurer le mot de passe initial",
+    description="Définit le mot de passe initial avec un token d'invitation."
+)
+async def setup_password(
+    setup_data: PasswordResetConfirm,
+    conn: duckdb.DuckDBPyConnection = Depends(get_db_connection)
+):
+    """
+    Configu­re le mot de passe initial pour un nouvel utilisateur.
+    
+    Utilisé après que l'admin a créé un utilisateur et envoyé une invitation par email.
+    
+    - **token**: Token d'invitation reçu par email
+    - **new_password**: Mot de passe initial (min 8 caractères, 1 majuscule, 1 chiffre)
+    """
+    try:
+        # Vérifier le token
+        user_id = verify_password_reset_token(setup_data.token)
+        
+        # Hasher le nouveau mot de passe
+        hashed_password = hash_password(setup_data.new_password)
+        
+        # Mettre à jour le mot de passe dans la base de données
+        service = UserService(conn)
+        from datetime import datetime, timezone
+        
+        service.db_conn.execute(
+            "UPDATE users SET password_hash = ?, updated_at = ? WHERE id = ?",
+            [hashed_password, datetime.now(timezone.utc), user_id]
+        )
+        
+        # Consommer le token (l'invalider pour éviter la réutilisation)
+        consume_password_reset_token(setup_data.token)
+        
+        return {"message": "Mot de passe défini avec succès. Vous pouvez maintenant vous connecter."}
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=str(e)
+        )
+
+
+@router.post(
     "/logout",
     summary="Déconnexion",
-    description="Déconnecte l'utilisateur "
+    description="Déconnecte l'utilisateur"
 )
 async def logout(response: Response, current_user: User = Depends(get_current_user)):
     """

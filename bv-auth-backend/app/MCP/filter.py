@@ -47,8 +47,6 @@ def apply_filters(sql: str, user_role: str, user_shop_id: Optional[str] = None) 
     """
     Applique les transformations SQL selon le rôle :
     - STORE_MANAGER : injection WHERE shop_id = '...'
-    - MARKETING     : anonymisation des colonnes clients sensibles
-    - ACHATS        : masquage des prix de vente
     - ADMIN         : aucune transformation
     """
     applied = []
@@ -56,12 +54,7 @@ def apply_filters(sql: str, user_role: str, user_shop_id: Optional[str] = None) 
     if user_role == "STORE_MANAGER":
         sql, applied = _filter_store_manager(sql, user_shop_id, applied)
 
-    elif user_role == "MARKETING":
-        sql, applied = _filter_marketing(sql, applied)
-
-    elif user_role == "ACHATS":
-        sql, applied = _filter_achats(sql, applied)
-
+    
     # ADMIN : pass-through
 
     return FilterResult(sql=sql, applied=applied)
@@ -109,37 +102,7 @@ def _filter_store_manager(sql: str, shop_id: Optional[str], applied: list) -> tu
     return sql, applied
 
 
-# Colonnes clients à anonymiser pour le rôle MARKETING
-_MARKETING_SENSITIVE_COLS = [
-    "customer_email", "email",
-    "customer_phone", "phone",
-    "customer_name", "first_name", "last_name",
-    "customer_address", "address",
-]
 
 
-def _filter_marketing(sql: str, applied: list) -> tuple[str, list]:
-    """Remplace les colonnes sensibles par des valeurs anonymisées."""
-    for col in _MARKETING_SENSITIVE_COLS:
-        pattern = re.compile(rf"\b{re.escape(col)}\b", re.IGNORECASE)
-        if pattern.search(sql):
-            sql = pattern.sub(f"'***' AS {col}", sql)
-            applied.append(f"MARKETING anonymized: {col}")
-    return sql, applied
 
 
-# Colonnes de prix à masquer pour le rôle ACHATS
-_ACHATS_PRICE_COLS = [
-    "sale_price", "selling_price", "price_ttc",
-    "price_ht", "discount_price", "promo_price",
-]
-
-
-def _filter_achats(sql: str, applied: list) -> tuple[str, list]:
-    """Masque les colonnes de prix de vente."""
-    for col in _ACHATS_PRICE_COLS:
-        pattern = re.compile(rf"\b{re.escape(col)}\b", re.IGNORECASE)
-        if pattern.search(sql):
-            sql = pattern.sub(f"NULL AS {col}", sql)
-            applied.append(f"ACHATS masked: {col}")
-    return sql, applied

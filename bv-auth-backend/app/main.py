@@ -14,6 +14,7 @@ from app.db.init_db import init_db, create_default_admin, check_db
 from app.api import auth, users
 from app.api.chat import router as chat_router
 from app.api.chat_history import router as chat_history_router
+from app.api.notification import router as notifications_router
 
 # CONFIGURATION DES LOGS
 
@@ -137,6 +138,7 @@ app.include_router(auth.router)
 app.include_router(users.router)
 app.include_router(chat_router)
 app.include_router(chat_history_router)
+app.include_router(notifications_router)
 
 # Interface de test
 _UI_PATH = Path(__file__).parent / "static" / "chat.html"

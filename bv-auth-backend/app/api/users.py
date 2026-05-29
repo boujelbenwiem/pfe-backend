@@ -7,14 +7,21 @@ from app.schemas.user import (
     UserUpdate, 
     UserDeleteResponse,
     UsersListResponse,
-    PasswordChangeRequest
+    PasswordChangeRequest,
+    AdminCreateUserRequest,
+    AdminCreateUserResponse
 )
 from app.services.user_service import UserService
+from app.services.email_service import EmailService
 from app.db.session import get_db_connection
 from app.core.deps import (
     get_current_user,
     require_admin,
     require_self_or_admin
+)
+from app.core.security import (
+    generate_password_reset_token,
+    hash_password
 )
 from app.models.user import User, UserRole
 
@@ -359,6 +366,92 @@ async def deactivate_user(
     try:
         deactivated_user = service.deactivate_user(user_id)
         return deactivated_user.to_dict()
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=str(e)
+        )
+
+
+@router.post(
+    "/admin/create",
+    response_model=AdminCreateUserResponse,
+    status_code=status.HTTP_201_CREATED,
+    summary="Créer un utilisateur (Admin)",
+    description="Crée un nouvel utilisateur et envoie un lien de configuration. Réservé aux administrateurs."
+)
+async def admin_create_user(
+    user_data: AdminCreateUserRequest,
+    admin: User = Depends(require_admin),
+    conn: duckdb.DuckDBPyConnection = Depends(get_db_connection)
+):
+    """
+    Crée un nouvel utilisateur avec invitation par email.
+    
+    L'admin crée l'utilisateur, un token sécurisé est généré et envoyé par email.
+    L'utilisateur peut alors cliquer sur le lien pour définir son mot de passe.
+    
+    Réservé aux administrateurs.
+    """
+    service = UserService(conn)
+    
+    try:
+        # Vérifier que l'email n'existe pas déjà
+        existing_user = service.get_user_by_email(user_data.email)
+        if existing_user:
+            raise HTTPException(
+                status_code=status.HTTP_409_CONFLICT,
+                detail=f"L'email {user_data.email} est déjà utilisé"
+            )
+        
+        # Créer un mot de passe temporaire (n'est pas utilisé pour la connexion initialement)
+        temp_password = "TempPassword123!"  # Ce mot de passe ne sera pas utilisé
+        hashed_password = hash_password(temp_password)
+        
+        # Insérer l'utilisateur dans la base de données
+        from datetime import datetime, timezone
+        created_at = datetime.now(timezone.utc)
+        updated_at = datetime.now(timezone.utc)
+        
+        service.db_conn.execute("""
+            INSERT INTO users (username, email, password_hash, role, store_id, department, is_active, created_at, updated_at)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+        """, [
+            user_data.username,
+            user_data.email,
+            hashed_password,
+            user_data.role,
+            user_data.store_id,
+            user_data.department,
+            True,
+            created_at,
+            updated_at
+        ])
+        
+        # Récupérer l'utilisateur créé
+        new_user = service.get_user_by_email(user_data.email)
+        if not new_user:
+            raise Exception("Erreur lors de la création de l'utilisateur")
+        
+        # Générer un token de réinitialisation de mot de passe
+        reset_token = generate_password_reset_token(new_user.id, expires_in_hours=24)
+        
+        # Envoyer un email d'invitation
+        email_service = EmailService()
+        email_sent = email_service.send_user_invitation_email(
+            new_user.email,
+            new_user.username,
+            reset_token
+        )
+        
+        return AdminCreateUserResponse(
+            user=new_user.to_dict(),
+            message=f"Utilisateur {user_data.email} créé avec succès. Un email d'invitation a été envoyé.",
+            reset_link_sent=email_sent
+        )
+    
+    except HTTPException:
+        raise
     except Exception as e:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,

@@ -101,6 +101,7 @@ def generate_sql(state: AgentState) -> AgentState:
     "   - Ne fais JOIN QUE si les colonnes nécessaires sont dans des tables différentes\n"
     "   - Si toutes les informations sont dans UNE seule table, ne fais pas de JOIN\n"
     "   - Exemple: pour le prix d'un produit, pricing_by_shop suffit (pas besoin de products)\n"
+    "   -NE JAMAIS utiliser USING() \n"
     "\n"
     "9. Noms de colonnes :\n"
     "   - Utilise les noms EXACTS des colonnes dans les schémas\n"

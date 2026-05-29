@@ -9,6 +9,7 @@ class AgentState(TypedDict):
     user_role: str
     user_shop_id: Optional[str]
     question: str
+    original_question: Optional[str]  # question avant réécriture
     timestamp: str
     conversation_id: Optional[str]
 
@@ -27,6 +28,10 @@ class AgentState(TypedDict):
     query_columns: Optional[List[str]]
     filters_applied: Optional[List[str]]  
     execution_error: Optional[str]
+
+    # Agent 3b - SQL Validation / Correction
+    needs_re_retrieval: Optional[bool]
+    validation_count: int
 
     # Agent 4 - Formatage
     output_type: Optional[Literal["text", "table", "chart"]]
