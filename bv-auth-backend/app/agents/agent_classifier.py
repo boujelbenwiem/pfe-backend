@@ -62,7 +62,7 @@ def answer_directly(state: AgentState) -> AgentState:
     intention = state.get("intention", "generale")
 
     system = (
-        "Tu es un assistant expert Bureau Vallée. Réponds en français de façon claire et concise. "
+        "Tu es un assistant expert Bureau Vallée. Réponds en français de façon claire et concise.si question en englais repond en anglais. "
         + (
             "Explique les concepts, règles et processus métier du retail/distribution."
             if intention == "metier"

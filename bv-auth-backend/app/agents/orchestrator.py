@@ -17,6 +17,7 @@ from langfuse.langchain import CallbackHandler as LangfuseCallbackHandler
 
 from app.core.config import settings
 from app.agents.state import AgentState
+from app.agents.agent_query_rewriter import rewrite_query
 from app.agents.agent_classifier import classify_query, answer_directly
 from app.agents.agent_rag import retrieve_chunks, rerank_chunks
 from app.agents.agent_sql import generate_sql, increment_retry, should_retry
@@ -84,6 +85,7 @@ def _get_pipeline_graph():
         builder = StateGraph(AgentState)
 
         # Nœuds
+        builder.add_node("rewrite_query",     rewrite_query)        # Hybrid: FAST + LLM fallback
         builder.add_node("classify",          classify_query)
         builder.add_node("check_access",      check_shop_access)
         builder.add_node("answer_directly",   answer_directly)
@@ -97,8 +99,11 @@ def _get_pipeline_graph():
         builder.add_node("format_as_table",   format_as_table)
         builder.add_node("format_as_chart",   format_as_chart)
 
-        # Entrée
-        builder.set_entry_point("classify")
+        # Entrée: rewrite_query en premier (hybrid query optimization)
+        builder.set_entry_point("rewrite_query")
+
+        # rewrite_query → classify (après enrichissement de la query)
+        builder.add_edge("rewrite_query", "classify")
 
         # classify → route selon intention
         builder.add_conditional_edges(
@@ -198,8 +203,11 @@ def build_initial_state(
         "user_role": user_role,
         "user_shop_id": user_shop_id,
         "question": question,
+        "original_question": None,
         "timestamp": datetime.now(timezone.utc).isoformat(),
         "conversation_id": conversation_id,
+        "rewrite_method": None,          # Hybrid: FAST_SYNONYMS ou LLM_FALLBACK
+        "rewrite_confidence": None,      # Score 0.0-1.0
         "intention": None,
         "access_denied": None,
         "retrieved_chunks": None,
@@ -209,7 +217,10 @@ def build_initial_state(
         "retry_count": 0,
         "query_result": None,
         "query_columns": None,
+        "filters_applied": None,
         "execution_error": None,
+        "needs_re_retrieval": None,
+        "validation_count": 0,
         "output_type": None,
         "chart_type": None,
         "formatted_response": None,

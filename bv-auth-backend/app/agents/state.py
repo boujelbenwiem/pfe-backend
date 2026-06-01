@@ -12,6 +12,10 @@ class AgentState(TypedDict):
     original_question: Optional[str]  # question avant réécriture
     timestamp: str
     conversation_id: Optional[str]
+    
+    # Agent 0 - Query Rewriting (Hybrid approach)
+    rewrite_method: Optional[Literal["FAST_SYNONYMS", "LLM_FALLBACK"]]
+    rewrite_confidence: Optional[float]  # Score 0.0-1.0
 
     # Agent 1 - Classification
     intention: Optional[Literal["analytique", "metier", "generale", "erreur"]]

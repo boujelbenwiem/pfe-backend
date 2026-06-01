@@ -1,57 +1,100 @@
 # backend/app/agents/agent_query_rewriter.py
-# Pre-retrieval : réécriture et expansion de la question utilisateur
-# pour améliorer la qualité du retrieval vectoriel (schéma de tables).
+# Query rewriting par synonymes uniquement (déterministe, < 10ms)
 
 import logging
-
-from langchain_groq import ChatGroq
-from langchain_core.messages import SystemMessage, HumanMessage
+import time
+from typing import Tuple
+from functools import lru_cache
 
 from app.agents.state import AgentState
-from app.core.config import settings
 
 logger = logging.getLogger(__name__)
 
-llm = ChatGroq(
-    model="openai/gpt-oss-120b",
-    api_key=settings.GROQ_API_KEY,
-    temperature=0.0,
-)
+# ============================================================================
+# DICTIONNAIRE SYNONYMES (DÉTERMINISTE, < 10MS)
+# ============================================================================
 
-SYSTEM_PROMPT = """\
-Tu es un assistant spécialisé dans la réécriture de requêtes utilisateur pour \
-améliorer la recherche dans une base de connaissances contenant des schémas de \
-tables d'une base de données e-commerce .
+SYNONYMS = {
+    "stock": ["available_quantity", "origin_quantity", "disponibilité", "inventaire"],
+    "prix": ["selling_price_ttc", "selling_price_ht", "tarif", "coût"],
+    "produit": ["sku"],
+    
+}
 
-Ton objectif : transformer la question brute de l'utilisateur en une version \
-enrichie qui maximise les chances de retrouver les bonnes tables et colonnes \
-dans un index vectoriel.
+# ============================================================================
+# MATCHING PAR SYNONYMES AVEC SCORE DE CONFIANCE
+# ============================================================================
 
-RÈGLES :
-1. Garde le SENS EXACT de la question — ne change pas l'intention.
-3. Corrige les fautes d'orthographe et de grammaire.
-4. Si la question mentionne un concept vague, précise-le \
-5. Traduis les abréviations courantes (CA → chiffre d'affaires, promo → promotion).
-6. Retourne UNIQUEMENT la question réécrite, rien d'autre.
-7. Reste en français.
-"""
+def _calculate_match_confidence(question: str, matched_words: list) -> float:
+    """
+    Calcule un score de confiance basé sur:
+    - Nombre de mots matchés
+    - Couverture du vocabulaire
+    """
+    if not matched_words:
+        return 0.0
+    
+    question_words = set(question.lower().split())
+    matched_set = set(matched_words)
+    
+    # Ratio: mots matchés / total de mots de la question
+    coverage = len(matched_set) / max(len(question_words), 1)
+    
+    # Nombre de mots matchés (bonus si plusieurs matches)
+    match_count = len(matched_set)
+    match_bonus = min(match_count / 3.0, 1.0)  # Plafond à 1.0
+    
+    # Score final: moyenne pondérée
+    confidence = (coverage * 0.6) + (match_bonus * 0.4)
+    return min(confidence, 1.0)
 
+
+def _rewrite_with_synonyms(question: str) -> Tuple[str, float, list]:
+    """
+    Enrichit la question avec synonymes (déterministe, <10ms).
+    
+    Returns:
+        (rewritten_question, confidence_score, matched_words)
+    """
+    start = time.time()
+    question_lower = question.lower()
+    enriched = question
+    matched_words = []
+    
+    # Cherche des matches de synonymes
+    for word, synonyms in SYNONYMS.items():
+        if word in question_lower:
+            enriched += " " + " ".join(synonyms)
+            matched_words.append(word)
+    
+    elapsed = time.time() - start
+    confidence = _calculate_match_confidence(question, matched_words)
+    
+    logger.debug(f"REWRITE: {elapsed*1000:.2f}ms, confidence={confidence:.2f}, matches={matched_words}")
+    
+    return enriched, confidence, matched_words
+
+
+# ============================================================================
+# FONCTION PRINCIPALE
+# ============================================================================
 
 def rewrite_query(state: AgentState) -> AgentState:
-    """Réécrit/expand la question utilisateur avant le retrieval vectoriel."""
+    """
+    Enrichit la question avec synonymes du dictionnaire.
+    """
     question = state["question"]
-
-    try:
-        response = llm.invoke([
-            SystemMessage(content=SYSTEM_PROMPT),
-            HumanMessage(content=f"Question originale : {question}"),
-        ])
-        rewritten = response.content.strip()
-        if not rewritten:
-            rewritten = question
-
-        logger.info("Query rewritten: '%s' → '%s'", question, rewritten)
-        return {**state, "question": rewritten, "original_question": question}
-    except Exception as e:
-        logger.warning("Query rewriting failed, using original: %s", e)
-        return {**state, "original_question": question}
+    
+    start = time.time()
+    rewritten, confidence, matched_words = _rewrite_with_synonyms(question)
+    elapsed = time.time() - start
+    
+    logger.info(f"Rewrite: {elapsed*1000:.2f}ms | confidence={confidence:.2f} | matches={matched_words}")
+    
+    return {
+        **state,
+        "question": rewritten,
+        "original_question": question,
+        "rewrite_method": "SYNONYMS",
+        "rewrite_confidence": confidence,
+    }

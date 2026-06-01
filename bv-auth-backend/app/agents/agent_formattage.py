@@ -65,10 +65,13 @@ def _llm_intro(question: str, n_rows: int, columns: List[str], output_type: str 
         f"Question de l'utilisateur : {question}\n"
         f"Le résultat contient {n_rows} ligne(s) et les colonnes suivantes : {cols_str}.\n\n"
         f"Type de réponse : {output_type}\n\n"
-        "Écris UNE SEULE phrase introductive en français pas trop longue qui présente "
+        "NE génère AUCUN tableau, AUCUNE liste, AUCUN markdown, uniquement du texte fluide et naturel."
+        "si question en englais repond en anglais sinon repond en francais."
+        "Écris UNE SEULE phrase introductive en français ou en anglais, pas trop longue qui présente "
         "ce résultat de manière naturelle. Ne commence pas par 'Voici' uniquement, "
         "sois précis sur ce que montrent les données."
-        "ne genere jamis des tableau markdown ou des listes a puce dans ta reponse, uniquement du texte fluide et naturel."
+        
+        
     )
     try:
         response = _intro_llm.invoke([HumanMessage(content=prompt)])
@@ -225,12 +228,14 @@ def format_as_text(state: AgentState) -> AgentState:
         f"Nombre de résultats : {len(data)}\n\n"
         f"Données (les valeurs sont des identifiants temporaires que tu DOIS reprendre tels quels) :\n{anon_str}\n\n"
         "INSTRUCTIONS STRICTES :\n"
-        "1. Formule une réponse naturelle en français, concise, qui répond à la question .\n"
+        "7. si question en englais repond en anglais.\n"
+        "1. Formule une réponse naturelle en français ou en anglais, concise, qui répond à la question .\n"
         "2. Tu DOIS inclure les identifiants temporaires (VAL_1, VAL_2, etc.) EXACTEMENT comme ils apparaissent.\n"
         "3. Ne traduis PAS et ne modifie PAS les identifiants VAL_X.\n"
         "4. Pour les nombres dans les identifiants, utilise-les tels quels.\n"
         "5. exemple de réponse attendue : 'Le produit VAL_1 (Cahier) a un stock disponible de VAL_2 unités.'\n"
         "6. si la valeur est un booléen, repond directement naturellement exemple : oui le produit est disponible. \n"
+        
     )
     try:
         response = _text_llm.invoke([HumanMessage(content=prompt)])
